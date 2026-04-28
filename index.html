@@ -49,15 +49,16 @@ body {
 .progress-fill { height:100%; background:var(--pop); transition:width 0.3s ease; }
 .card-scene { width:100%; max-width:580px; perspective:1400px; cursor:pointer; }
 .card {
-  position:relative; width:100%; min-height:280px;
+  position:relative; width:100%; height:clamp(300px,55vh,500px);
   transform-style:preserve-3d; transition:transform 0.55s cubic-bezier(0.35,0,0.25,1); border-radius:3px;
 }
 .card.flipped { transform:rotateY(180deg); }
 .card-face {
   position:absolute; inset:0; border-radius:3px;
   backface-visibility:hidden; -webkit-backface-visibility:hidden;
-  display:flex; flex-direction:column; padding:28px 32px; min-height:280px;
+  display:flex; flex-direction:column; padding:28px 32px;
   border:1px solid var(--rule); box-shadow:0 4px 18px rgba(26,22,18,0.10);
+  overflow:hidden;
 }
 .card-front { background:#fff; }
 .card-back { background:var(--answer-bg); transform:rotateY(180deg); border-color:var(--answer-rule); }
@@ -70,7 +71,8 @@ body {
 .card-back .card-type { color:#6a9e4a; }
 .card-unit { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--ink3); background:var(--paper2); padding:3px 8px; border-radius:2px; }
 .card-back .card-unit { background:#d8edca; color:var(--answer-ink); }
-.card-body { flex:1; display:flex; align-items:center; justify-content:center; padding:6px 0 18px; }
+.card-body { flex:1; display:flex; flex-direction:column; padding:6px 0 18px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.card-front .card-body { align-items:center; justify-content:center; }
 .card-text { font-family:'DM Sans',sans-serif; font-size:clamp(0.82rem,2.3vw,1rem); line-height:1.72; text-align:center; color:var(--ink); word-break:break-word; }
 .card-back .card-text { color:var(--answer-ink); font-size:clamp(0.78rem,2.1vw,0.95rem); text-align:left; }
 .card-mark { font-family:'DM Serif Display',serif; font-style:italic; font-size:3.5rem; line-height:1; color:var(--rule); position:absolute; bottom:14px; right:22px; user-select:none; }
@@ -480,7 +482,14 @@ a:'Code injection: system code has bugs allowing executable code to be added or 
 
 ]; // end ALL_CARDS
 
-let activeUnit='all', deck=[...ALL_CARDS], idx=0, flipped=false, touchStartX=0;
+const STORAGE_KEY='osfc_state';
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({unit:activeUnit,idx}));}catch(e){}}
+function loadState(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return s;}catch(e){return{};}}
+const _saved=loadState();
+let activeUnit=_saved.unit||'all';
+let deck=activeUnit==='all'?[...ALL_CARDS]:ALL_CARDS.filter(c=>c.u===activeUnit);
+let idx=Math.min(_saved.idx||0,deck.length-1);
+let flipped=false, touchStartX=0;
 
 function unitLabel(id){return(UNITS.find(u=>u.id===id)||{}).label||id;}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -539,7 +548,7 @@ function toggleFlip(){
   const b=document.getElementById('flipBtn');
   if(b)b.textContent=flipped?'unflip':'flip';
 }
-function navigate(dir){idx=((idx+dir)+deck.length)%deck.length;flipped=false;renderCard(dir);}
+function navigate(dir){idx=((idx+dir)+deck.length)%deck.length;flipped=false;saveState();renderCard(dir);}
 function renderUnitStrip(){
   const strip=document.getElementById('unitStrip');
   strip.innerHTML=UNITS.map(u=>`<button class="unit-tab${u.id===activeUnit?' active':''}" data-id="${u.id}">${u.label}</button>`).join('');
@@ -547,7 +556,7 @@ function renderUnitStrip(){
     btn.addEventListener('click',()=>{
       activeUnit=btn.dataset.id;
       deck=activeUnit==='all'?[...ALL_CARDS]:ALL_CARDS.filter(c=>c.u===activeUnit);
-      idx=0;flipped=false;
+      idx=0;flipped=false;saveState();
       strip.querySelectorAll('.unit-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       renderCard(null);
