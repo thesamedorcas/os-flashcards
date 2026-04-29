@@ -7,567 +7,574 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --paper: #f5f0e8; --paper2: #ede7d9; --ink: #1a1612; --ink2: #4a3f35;
-  --ink3: #9a8e82; --rule: #d4c9b8; --pop: #c94a1e;
-  --answer-bg: #eef4e8; --answer-ink: #2d4a1e; --answer-rule: #c2d9b0;
+--paper: #f5f0e8; --paper2: #ede7d9; --ink: #1a1612; --ink2: #4a3f35;
+--ink3: #9a8e82; --rule: #d4c9b8; --pop: #c94a1e;
+--answer-bg: #eef4e8; --answer-ink: #2d4a1e; --answer-rule: #c2d9b0;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  background:var(--paper); color:var(--ink); font-family:'DM Sans',sans-serif;
-  min-height:100dvh; display:flex; flex-direction:column;
-  background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--rule) 27px,var(--rule) 28px);
-  background-attachment:fixed;
+background:var(--paper); color:var(--ink); font-family:'DM Sans',sans-serif;
+min-height:100dvh; display:flex; flex-direction:column;
+background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--rule) 27px,var(--rule) 28px);
+background-attachment:fixed;
 }
 .topbar {
-  background:var(--ink); color:var(--paper); padding:10px 24px;
-  display:flex; align-items:center; justify-content:space-between;
-  position:sticky; top:0; z-index:10;
+background:var(--ink); color:var(--paper); padding:10px 24px;
+display:flex; align-items:center; justify-content:space-between;
+position:sticky; top:0; z-index:10;
 }
 .topbar-title { font-family:'DM Serif Display',serif; font-size:1.15rem; }
 .topbar-title em { font-style:italic; color:#c8b99a; }
 .topbar-counter { font-family:'DM Mono',monospace; font-size:0.7rem; color:#9a8e82; letter-spacing:0.08em; }
 .topbar-counter span { color:#f5f0e8; }
 .unit-strip {
-  background:var(--paper2); border-bottom:1px solid var(--rule);
-  padding:0 16px; display:flex; overflow-x:auto;
-  scrollbar-width:none; -webkit-overflow-scrolling:touch;
+background:var(--paper2); border-bottom:1px solid var(--rule);
+padding:0 16px; display:flex; overflow-x:auto;
+scrollbar-width:none; -webkit-overflow-scrolling:touch;
 }
 .unit-strip::-webkit-scrollbar { display:none; }
 .unit-tab {
-  flex-shrink:0; padding:10px 16px; font-family:'DM Mono',monospace;
-  font-size:0.72rem; letter-spacing:0.06em; color:var(--ink3);
-  background:transparent; border:none; border-bottom:2px solid transparent;
-  cursor:pointer; transition:color 0.12s,border-color 0.12s; white-space:nowrap;
+flex-shrink:0; padding:10px 16px; font-family:'DM Mono',monospace;
+font-size:0.72rem; letter-spacing:0.06em; color:var(--ink3);
+background:transparent; border:none; border-bottom:2px solid transparent;
+cursor:pointer; transition:color 0.12s,border-color 0.12s; white-space:nowrap;
 }
 .unit-tab:hover { color:var(--ink); }
 .unit-tab.active { color:var(--pop); border-bottom-color:var(--pop); font-weight:500; }
 .main {
-  flex:1; display:flex; flex-direction:column; align-items:center;
-  justify-content:center; padding:32px 24px 24px; gap:20px;
+flex:1; display:flex; flex-direction:column; align-items:center;
+justify-content:center; padding:32px 24px 24px; gap:20px;
 }
 .progress-bar { width:100%; max-width:580px; height:2px; background:var(--rule); border-radius:1px; overflow:hidden; }
 .progress-fill { height:100%; background:var(--pop); transition:width 0.3s ease; }
 .card-scene { width:100%; max-width:580px; perspective:1400px; cursor:pointer; }
 .card {
-  position:relative; width:100%; height:clamp(300px,55vh,500px);
-  transform-style:preserve-3d; transition:transform 0.55s cubic-bezier(0.35,0,0.25,1); border-radius:3px;
+position:relative; width:100%; height:clamp(280px, 45vh, 480px);
+transform-style:preserve-3d; transition:transform 0.55s cubic-bezier(0.35,0,0.25,1); border-radius:3px;
 }
 .card.flipped { transform:rotateY(180deg); }
 .card-face {
-  position:absolute; inset:0; border-radius:3px;
-  backface-visibility:hidden; -webkit-backface-visibility:hidden;
-  display:flex; flex-direction:column; padding:28px 32px;
-  border:1px solid var(--rule); box-shadow:0 4px 18px rgba(26,22,18,0.10);
-  overflow:hidden;
+position:absolute; inset:0; border-radius:3px;
+backface-visibility:hidden; -webkit-backface-visibility:hidden;
+display:flex; flex-direction:column; padding:28px 32px;
+border:1px solid var(--rule); box-shadow:0 4px 18px rgba(26,22,18,0.10);
+overflow:hidden;
 }
 .card-front { background:#fff; }
 .card-back { background:var(--answer-bg); transform:rotateY(180deg); border-color:var(--answer-rule); }
 .card-header {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--rule);
+display:flex; align-items:center; justify-content:space-between;
+margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--rule);
 }
 .card-back .card-header { border-bottom-color:var(--answer-rule); }
 .card-type { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink3); }
 .card-back .card-type { color:#6a9e4a; }
 .card-unit { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--ink3); background:var(--paper2); padding:3px 8px; border-radius:2px; }
 .card-back .card-unit { background:#d8edca; color:var(--answer-ink); }
-.card-body { flex:1; display:flex; flex-direction:column; padding:6px 0 18px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
-.card-front .card-body { align-items:center; justify-content:center; }
-.card-text { font-family:'DM Sans',sans-serif; font-size:clamp(0.82rem,2.3vw,1rem); line-height:1.72; text-align:center; color:var(--ink); word-break:break-word; }
+.card-body { flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:6px 0 18px; overflow-y:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; scrollbar-color:var(--rule) transparent; }
+.card-body::-webkit-scrollbar { width:4px; }
+.card-body::-webkit-scrollbar-track { background:transparent; }
+.card-body::-webkit-scrollbar-thumb { background:var(--rule); border-radius:2px; }
+.card-text { font-family:'DM Sans',sans-serif; font-size:clamp(0.82rem,2.3vw,1rem); line-height:1.72; text-align:center; color:var(--ink); word-break:break-word; margin:auto 0; }
 .card-back .card-text { color:var(--answer-ink); font-size:clamp(0.78rem,2.1vw,0.95rem); text-align:left; }
 .card-mark { font-family:'DM Serif Display',serif; font-style:italic; font-size:3.5rem; line-height:1; color:var(--rule); position:absolute; bottom:14px; right:22px; user-select:none; }
 .card-back .card-mark { color:var(--answer-rule); }
 .card-hint { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--ink3); text-align:center; letter-spacing:0.04em; }
 .nav { display:flex; align-items:center; gap:10px; width:100%; max-width:580px; }
 .nav-btn {
-  width:44px; height:44px; border-radius:2px; border:1px solid var(--rule);
-  background:#fff; color:var(--ink2); font-size:1rem; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:all 0.12s; flex-shrink:0; -webkit-tap-highlight-color:transparent;
+width:44px; height:44px; border-radius:2px; border:1px solid var(--rule);
+background:#fff; color:var(--ink2); font-size:1rem; cursor:pointer;
+display:flex; align-items:center; justify-content:center;
+transition:all 0.12s; flex-shrink:0; -webkit-tap-highlight-color:transparent;
 }
 .nav-btn:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
 .nav-btn:active { transform:scale(0.93); }
 .flip-btn {
-  flex:1; height:44px; border-radius:2px; border:1px solid var(--ink);
-  background:var(--ink); color:var(--paper); font-family:'DM Serif Display',serif;
-  font-style:italic; font-size:1rem; cursor:pointer; transition:all 0.12s;
-  -webkit-tap-highlight-color:transparent;
+flex:1; height:44px; border-radius:2px; border:1px solid var(--ink);
+background:var(--ink); color:var(--paper); font-family:'DM Serif Display',serif;
+font-style:italic; font-size:1rem; cursor:pointer; transition:all 0.12s;
+-webkit-tap-highlight-color:transparent;
 }
 .flip-btn:hover { background:var(--pop); border-color:var(--pop); }
 .flip-btn:active { transform:scale(0.98); }
 .swipe-hint { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--ink3); letter-spacing:0.06em; }
 @keyframes fromRight { from{opacity:0;transform:translateX(28px)} to{opacity:1;transform:translateX(0)} }
-@keyframes fromLeft  { from{opacity:0;transform:translateX(-28px)} to{opacity:1;transform:translateX(0)} }
+@keyframes fromLeft { from{opacity:0;transform:translateX(-28px)} to{opacity:1;transform:translateX(0)} }
 .slide-right .card { animation:fromRight 0.22s ease; }
-.slide-left  .card { animation:fromLeft  0.22s ease; }
+.slide-left .card { animation:fromLeft 0.22s ease; }
 @media(max-width:480px){ .card-face{padding:18px 18px} .main{padding:18px 12px 14px} .topbar{padding:10px 14px} }
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div class="topbar-title">Operating Systems <em>Flashcards</em></div>
-  <div class="topbar-counter" id="topCounter">—</div>
+<div class="topbar-title">Operating Systems <em>Flashcards</em></div>
+<div class="topbar-counter" id="topCounter">—</div>
 </div>
 <div class="unit-strip" id="unitStrip"></div>
 <div class="main" id="main"></div>
 <script>
 const UNITS=[
-  {id:'all',label:'All'},
-  {id:'Hardware',label:'Hardware'},
-  {id:'Processes',label:'Processes'},
-  {id:'Scheduling',label:'Scheduling'},
-  {id:'Memory',label:'Memory Management'},
-  {id:'Concurrency',label:'Concurrency'},
-  {id:'IO',label:'I/O'},
-  {id:'Filesystems',label:'Filesystems'},
-  {id:'Networking',label:'Networking'},
-  {id:'Security',label:'Security'},
+{id:'all',label:'All'},
+{id:'Hardware',label:'Hardware'},
+{id:'Processes',label:'Processes'},
+{id:'Scheduling',label:'Scheduling'},
+{id:'Memory',label:'Memory Management'},
+{id:'Concurrency',label:'Concurrency'},
+{id:'IO',label:'I/O'},
+{id:'Filesystems',label:'Filesystems'},
+{id:'Networking',label:'Networking'},
+{id:'Security',label:'Security'},
 ];
 
 const ALL_CARDS=[
-
 // =====================================================================
 // HARDWARE
 // =====================================================================
 {u:'Hardware',q:'What is an interrupt?',
-a:'An interrupt is an event that signals the CPU, "interrupting" its current execution. A line is pulled high on the processor leg indicating something needs OS attention. The software that handles it is called an Interrupt Service Routine (ISR) or Interrupt Handler Routine (IHR). View interrupt stats: less /proc/interrupts'},
-
+a:'An interrupt is an event that signals the CPU, interrupting its current execution. A line is pulled high on the processor leg indicating something needs OS attention. The software that handles it is called an Interrupt Service Routine (ISR) or Interrupt Handler Routine (IHR). View interrupt stats: less /proc/interrupts'},
 {u:'Hardware',q:'Types of interrupts — full breakdown',
 a:'Hardware Interrupts: triggered by external hardware events. (1) Maskable: can be disabled/ignored by the OS — most IRQs. (2) Non-Maskable (NMI): cannot be disabled, used for critical hardware errors. Software Interrupts: triggered by software (also called traps or exceptions). Used for system calls, page faults, divide-by-zero, etc.'},
-
 {u:'Hardware',q:'How does the OS handle an interrupt?',
-a:'Each interrupt has a numeric code. The OS maintains an Interrupt Vector Table (IVT) listing the entry point of each handler. When an interrupt occurs: processor automatically switches to kernel mode and jumps to the correct ISR. Old context is saved automatically; ISR runs in a fresh stack frame (usually on a separate stack). IRET instruction returns to old context after ISR completes. Like a function call — saves context, executes handler, returns.'},
-
+a:'Each interrupt has a numeric code. The OS maintains an Interrupt Vector Table (IVT) listing the entry point of each handler. When an interrupt occurs: processor automatically switches to kernel mode and jumps to the correct ISR. Old context is saved automatically; ISR runs in a fresh stack frame (usually on a separate stack). IRET instruction returns to old context after ISR completes. Like a function call: saves context, executes handler, returns.'},
 {u:'Hardware',q:'System timer and jiffies',
 a:'Interrupts can be set to fire at singular or regular intervals — this creates timers. In Linux, every system timer interrupt is called a jiffy. The variable jiffies is incremented on every timer interrupt. Used for scheduling time slices, timeouts, and clock functions. Check jiffies since boot: sudo grep -E "^cpu|^jiff" /proc/timer_list'},
-
 {u:'Hardware',q:'User mode vs kernel mode — what changes and when',
 a:'User mode is less privileged — isolates user code from the OS kernel. In user mode you cannot: execute privileged instructions (mode switch, I/O), access another application\'s memory, or set interrupt flags. Kernel mode switches happen when: (1) system boots (starts in kernel mode), (2) an interrupt is handled, (3) a syscall is executed.'},
-
 {u:'Hardware',q:'System calls (syscalls)',
 a:'System calls are how programs enter the kernel to perform privileged tasks. Examples: open, read, write, close files; create/destroy processes; manipulate timers. Like functions — they abstract the implementation from the programmer. Linux syscall list: man2/syscalls.2.html. In C, file syscalls include fopen, fclose, fread, fwrite, fprintf.'},
-
 {u:'Hardware',q:'Memory Management Unit (MMU)',
 a:'The MMU provides address translation and memory protection. It sits between the processor and memory, translating virtual addresses to physical addresses at runtime. This is called hardware-assisted dynamic address translation. Enables applications to run in isolation without trampling on each other\'s memory. All modern processor families support this.'},
-
 {u:'Hardware',q:'Three hardware requirements for an OS',
 a:'1. Interrupts — for hardware-to-OS communication and timer-based preemption. 2. System Privilege — user mode vs kernel mode isolation, prevents user code damaging kernel. 3. Memory Protection — via the MMU, prevents processes accessing each other\'s memory. Without all three, a proper OS cannot function safely.'},
-
 {u:'Hardware',q:'Mechanism vs policy — the fundamental OS design principle',
 a:'Mechanism: the ability to do something — the how. Policy: the logic governing when or whether to use it — the what and when. Example: context switch is the mechanism (ability to swap threads); scheduling algorithm is the policy (decides which thread runs and for how long). Separating them means policies can change without redesigning mechanisms. This distinction recurs throughout the entire course.'},
-
 {u:'Hardware',q:'Key definitions: bare metal, virtualisation, kernel, shell',
 a:'Bare metal: software running on computer hardware without an OS. Virtualisation: OS multiplexing ability that enables system resources to be shared between multiple applications. Kernel: minimal core of an OS that provides basic facilities. Shell: a command-line interpreter that enables users to interact via text terminal with the OS.'},
+{u:'Hardware',q:'Interrupt vector table — structure and use',
+a:'The Interrupt Vector Table (IVT) is an OS-maintained data structure. Each entry maps a numeric interrupt code to the memory address (entry point) of the corresponding ISR. When an interrupt fires: processor reads the numeric code, looks up the IVT, and jumps to that ISR automatically. The IVT must be set up during OS boot. Interrupt numbers are fixed for hardware devices (e.g. timer, keyboard) and assigned by the OS for software traps.'},
+{u:'Hardware',q:'What is a system call and how is it invoked in C?',
+a:'A syscall is the programmatic interface from user-space to the OS kernel. It allows user programs to request privileged services (file I/O, process creation, memory mapping) without running in kernel mode themselves. Invoked in C via library wrappers (e.g. fopen wraps the open syscall). The syscall instruction (x86) or svc instruction (ARM) triggers a software interrupt, switches to kernel mode, executes the requested service, and returns. All syscalls have numeric codes. See man2/syscalls.2.html for the full list.'},
+{u:'Hardware',q:'OS definition — full one-liner',
+a:'"Management software that interposes between user applications and bare-metal hardware, to allocate system resources and provide common services." Two interfaces: User Interface (for users) and API/Application Programmer Interface (for developers). OS creates the illusion that each user is the only user and each app has the whole machine to itself. C is the language of choice for OS development: high enough level to compile for many architectures, low enough for systems efficiency.'},
 
 // =====================================================================
 // PROCESSES
 // =====================================================================
 {u:'Processes',q:'What is a process?',
 a:'"A process is a program in execution." Program = static object stored on disk (like a skeleton). Process = dynamic object in memory, currently executing (like a live animal). 1 program can generate many processes (different runtime instances). A process is a unit of: Scheduling (OS shares CPU between processes), Ownership (users own processes; processes own memory and files), Administration (OS keeps accounting records per process).'},
-
 {u:'Processes',q:'Process memory layout',
-a:'A process in memory contains from low to high address: Code (Text) — the compiled instructions. Data — global and static variables. Heap — dynamically allocated memory, grows upward. Stack — function calls and local variables, grows downward. Each process has its own virtual address space. Virtual address space on 32-bit: 4GB (2^32). Linux splits 3:1 or 2:2 user:kernel.'},
-
+a:'A process in memory contains from low to high address: Code (Text) — the compiled instructions. Data — global and static variables. Heap — dynamically allocated memory, grows upward. Stack — function calls and local variables, grows downward. Each process has its own virtual address space. Virtual address space on 32-bit: 4GB (2^32). Linux splits 3:1 or 2:2 user:kernel. The kernel portion is always mapped at the top of every process\'s address space.'},
 {u:'Processes',q:'Process states — conceptual and Linux state codes',
-a:'5 conceptual states: New (Born) — being created. Ready — waiting to be assigned to a processor. Running — instructions being executed. Waiting — waiting for something e.g. I/O. Terminated — finished. Linux state codes: R = running or runnable. S = sleeping, interruptible. D = waiting on I/O, not interruptible. T = stopped (paused by signal). Z = zombie (dead but needs cleaning up).'},
-
+a:'5 conceptual states: New (Born) — being created. Ready — waiting to be assigned to a processor. Running — instructions being executed. Waiting — waiting for something e.g. I/O. Terminated — finished. Linux state codes: R = running or runnable. S = sleeping, interruptible. D = waiting on I/O, not interruptible. T = stopped (paused by signal). Z = zombie (dead but needs cleaning up). View states: ps u or ps aux.'},
 {u:'Processes',q:'fork() — creating a new process',
-a:'fork() creates a child process that is a copy of the parent. Child has same PC, CPU registers, and open files as parent. Child occupies an entirely separate virtual address space — changes in parent or child are NOT visible in the other. Return value: 0 in child, child_PID in parent, -1 on failure. Syntax: pid_t pid = fork(); Include: unistd.h'},
-
+a:'fork() creates a child process that is a copy of the parent. Child has same PC, CPU registers, and open files as parent. Child occupies an entirely separate virtual address space — changes in parent or child are NOT visible in the other. Return value: 0 in child, child_PID in parent, -1 on failure. Syntax: pid_t pid = fork(); Include: unistd.h. Child is a replica — use execve() to run a different program in the child.'},
 {u:'Processes',q:'execve() / exec() — replacing a process image',
-a:'execve() replaces the currently running process with a new program binary. Parameters: (1) executable file name, (2) argument vector (argv), (3) environment variables as key/value pairs. After exec, the child\'s code/data/heap/stack are completely replaced. Used with fork() to start a different program in a child process. exec family: execl, execlp, execle, execv, execvp, execvpe.'},
-
+a:'execve() replaces the currently running process with a new program binary. Parameters: (1) executable file name, (2) argument vector (argv), (3) environment variables as key/value pairs. After exec, the child\'s code/data/heap/stack are completely replaced by the new program. Used with fork() to start a different program in a child process. exec family: execl, execlp, execle, execv, execvp, execvpe.'},
 {u:'Processes',q:'wait() and exit() — ending processes',
 a:'wait() — parent blocks until a child process completes. Syntax: pid_t wait(int *stat_loc); exit() — child terminates and returns status to parent. Syntax: void exit(int status); A child can also terminate by returning from main(). If parent never calls wait(), child becomes a zombie — stays in state Z until parent calls wait() or parent itself terminates.'},
-
 {u:'Processes',q:'Full process lifecycle in syscalls',
 a:'fork() — create child (copy of parent). execve() — replace child with new program. getpid() — returns PID of current process. getppid() — returns PID of parent. wait() — parent waits for child to finish. exit() — process terminates with status code. Include: unistd.h and sys/wait.h. Inspect process tree: pstree — all processes descend from the init process.'},
-
 {u:'Processes',q:'Process Control Block (PCB) — what it contains',
 a:'The PCB stores all metadata the OS needs to manage a process: PID (unique positive integer identifier), register values, program counter, stack pointer, open file handles, memory configuration, scheduling details (priority, state), profiling and accounting statistics, parent PID. Linux kernel structures: task_struct (all process context), thread_info and thread_struct (processor context). Access: cat /proc/self/status'},
-
 {u:'Processes',q:'/proc/self — process metadata entries',
 a:'cmdline — command used to start the process. cwd — symlink to current working directory. exe — symlink to the executable file. fd/ — folder of file descriptors for each open file. maps — how data is arranged in memory. stat — counters for OS events specific to this process. Replace self with a PID to inspect any other process. Interactive viewers: top, htop. Hierarchy: pstree.'},
-
 {u:'Processes',q:'Threads vs processes — key differences',
 a:'Process: program under execution, independent, has own memory space, interacts via IPC, slower context switch. Thread: smaller execution unit within a process, shares process memory, interacts via shared data, faster context switch. In Linux: no formal distinction — everything is a runnable task. Threads own: thread ID, signal mask, errno, scheduling policy, stack, registers, PC. Threads share: code, data, files, PID, open file descriptors.'},
-
 {u:'Processes',q:'Context switch — steps and cost',
 a:'A context switch replaces one executing process with another. Steps: (1) Stop current process. (2) Save state to PCB/thread_struct (PC, stack pointer, status registers, general registers, open file handles, allocated RAM). (3) Restore state of next process or load a new one. (4) Execute the loaded process. Cost: ~500 bytes saved per thread on 32-bit ARM. Overhead measured in microseconds (lmbench utility). Context switch = mechanism. Scheduling algorithm = policy.'},
-
 {u:'Processes',q:'Signals — how the kernel communicates with processes',
 a:'Signals are uni-directional asynchronous notifications from the kernel to a process or thread. Signal processing is event-based — like software interrupts. A process can register a custom signal handler to catch signals. SIGKILL and SIGSTOP cannot be caught or ignored. Common signals: SIGINT (Ctrl+C), SIGTERM, SIGKILL, SIGSTOP, SIGCHLD, SIGUSR1/2. Send signal: kill -SIGNAL PID. List signals: kill -l'},
-
 {u:'Processes',q:'Zombie process — definition and cleanup',
-a:'A zombie process is a completed child process that is waiting to be tidied up by its parent. The child has finished (called exit()) but remains in state Z in the process table. Zombie remains until: (1) the parent calls wait(), OR (2) the parent itself terminates (at which point init adopts and cleans up the zombie). Zombie exists so the parent can retrieve the child\'s exit status.'},
-
+a:'A zombie process is a completed child process that is waiting to be tidied up by its parent. The child has finished (called exit()) but remains in state Z in the process table. Zombie remains until: (1) the parent calls wait(), OR (2) the parent itself terminates (at which point init adopts and cleans up the zombie). Zombie exists so the parent can retrieve the child\'s exit status. A process that never reaps its zombies leaks process table entries.'},
 {u:'Processes',q:'Process hierarchies and the init process',
 a:'All processes in Linux form a tree descended from the init process (PID 1). Every process except init has a parent. getpid() returns PID of current process. getppid() returns PID of parent. View tree: pstree command. This hierarchy is used for signal propagation, resource accounting, and cleanup. When a parent dies before its children, the children are reparented to init.'},
+{u:'Processes',q:'Single-threaded vs multi-threaded process memory model',
+a:'Single-threaded: one set of Registers, PC, and Stack per process alongside shared Code, Data, Files. Multi-threaded: multiple threads each have their own Registers, PC, and Stack but ALL share the same Code, Data, and Files. This is why threads can communicate via shared data directly (no IPC needed) but also why race conditions exist. A process can have many threads. Linux kernel schedules threads, not processes.'},
+{u:'Processes',q:'Why does a context switch happen? What triggers it?',
+a:'A context switch can be triggered by: (1) a timer interrupt (preemption — process used up its quantum), (2) a process voluntarily calling wait() or sleep() or blocking on I/O, (3) a process exiting, (4) a higher-priority process becoming runnable (preemptive scheduling). The OS scheduler decides what runs next (policy). The context switch mechanism saves and restores state. Context switch is expensive: must flush TLB, save/restore ~500 bytes of state, and change virtual memory mapping.'},
 
 // =====================================================================
 // SCHEDULING
 // =====================================================================
 {u:'Scheduling',q:'Why schedule? Responsiveness and performance.',
 a:'"OS scheduling is selecting processes to run." Responsiveness: switching at high enough frequency makes it appear all processes run simultaneously — like juggling. Performance: switch to next process when current is waiting for I/O so CPU is never idle. Process behaviour: CPU bursts (using CPU, generally shorter) and I/O bursts (waiting, generally longer). CPU-bound: bitcoin miner, MP3 encoder. I/O-bound: disk formatter, web server.'},
-
 {u:'Scheduling',q:'Six scheduling metrics',
 a:'CPU Utilisation — ideally 100% busy (see top command). Throughput — number of processes completed per unit time. Load Average — average number of processes in the ready queue (see uptime command). Turnaround Time — elapsed time from submission to completion. Waiting Time — time spent in the ready queue. Response Time — time between submitting a request and getting the first response.'},
-
 {u:'Scheduling',q:'Preemptive vs non-preemptive scheduling',
-a:'Non-preemptive (co-operative): process runs until it completes or voluntarily yields. DOS used this. Preemptive: CPU timer interrupt can forcibly stop a long-running process. Linux uses preemptive scheduling. The time unit is called a quantum (also time slice). Long quantum = unresponsive system. Short quantum = high context switch overhead. 80% of CPU bursts should be smaller than the quantum. Check Linux quantum: cat /proc/sys/kernel/sched_rr_timeslice_ms'},
-
+a:'Non-preemptive (co-operative): process runs until it completes or voluntarily yields. DOS used this. Preemptive: CPU timer interrupt can forcibly stop a long-running process. Linux uses preemptive scheduling. The time unit is called a quantum (also time slice). Long quantum = unresponsive system. Short quantum = high context switch overhead. Rule of thumb: 80% of CPU bursts should be smaller than the quantum. Check Linux quantum: cat /proc/sys/kernel/sched_rr_timeslice_ms'},
 {u:'Scheduling',q:'FCFS — First Come First Served',
-a:'Non-preemptive. Jobs run in arrival order, uninterrupted until completion. Simplest queueing policy. Example: P1=27ms, P2=16ms arriving together. P1 runs 0 to 27ms, P2 runs 27 to 43ms. Waiting time: P1=0, P2=27ms. Average=13.5ms. Disadvantage: convoy effect — short processes stuck behind long ones. Poor for I/O-bound interactive systems.'},
-
+a:'Non-preemptive. Jobs run in arrival order, uninterrupted until completion. Simplest queueing policy. Example: P1=27ms, P2=16ms arriving together. P1 runs 0 to 27ms, P2 runs 27 to 43ms. Waiting time: P1=0ms, P2=27ms. Average=13.5ms. Disadvantage: convoy effect — short processes stuck behind long ones. Poor for I/O-bound interactive systems.'},
 {u:'Scheduling',q:'Round Robin (RR)',
-a:'Preemptive. Each process gets a fixed quantum then is preempted. Best for interactive and responsive systems. Example: P1=27ms, P2=16ms, quantum=10ms. P1 runs 0 to 10, P2 runs 10 to 20, P1 runs 20 to 30, P2 runs 30 to 36 (done), P1 runs 36 to 43 (done). Turnaround time increases vs FCFS but response time improves. Check Linux RR quantum: cat /proc/sys/kernel/sched_rr_timeslice_ms'},
-
+a:'Preemptive. Each process gets a fixed quantum then is preempted. Best for interactive and responsive systems. Example: P1=27ms, P2=16ms, quantum=10ms. Schedule: P1(0-10), P2(10-20), P1(20-30), P2(30-36 done), P1(36-43 done). Waiting time: P1=10+10=20ms, P2=10ms. Turnaround: P1=43ms, P2=36ms. Turnaround increases vs SJF but response time improves. Check Linux RR quantum: cat /proc/sys/kernel/sched_rr_timeslice_ms'},
 {u:'Scheduling',q:'SJF — Shortest Job First',
-a:'Non-preemptive. Orders the queue by time-to-completion, shortest first. Provably minimises average waiting time. Example: P1=27ms, P2=16ms arriving together. P2 runs first 0 to 16ms, then P1 16 to 43ms. Waiting time: P1=16, P2=0. Average=8ms vs 13.5ms for FCFS. Clairvoyant — requires knowing future job lengths in advance. Unrealistic in practice.'},
-
+a:'Non-preemptive. Orders the queue by time-to-completion, shortest first. Provably minimises average waiting time. Example: P1=27ms, P2=16ms arriving together. P2 runs first 0 to 16ms, then P1 16 to 43ms. Waiting time: P1=16ms, P2=0ms. Average=8ms vs 13.5ms for FCFS. Clairvoyant — requires knowing future job lengths in advance. Unrealistic in practice.'},
 {u:'Scheduling',q:'SRTF — Shortest Remaining Time First',
-a:'Preemptive version of SJF. If a shorter task arrives, the currently running task is preempted immediately. Must consider task arrival times. If all tasks arrive simultaneously, SRTF reduces to SJF. Example: P1=27ms (t=0), P2=16ms (t=4), P3=5ms (t=20). P1 runs 0 to 4. P2 preempts P1 at t=4 and runs 4 to 20. P3 arrives and runs 20 to 25. P1 resumes 25 to 43. Also clairvoyant — unrealistic in practice.'},
-
+a:'Preemptive version of SJF. If a shorter task arrives, the currently running task is preempted immediately. Must consider task arrival times. If all tasks arrive simultaneously, SRTF reduces to SJF. Example: P1=27ms arrives t=0, P2=16ms arrives t=4, P3=5ms arrives t=20. Schedule: P1(0-4), P2(4-20), P3(20-25), P1(25-48). Also clairvoyant — unrealistic in practice. Minimum possible average waiting time for any set of jobs.'},
 {u:'Scheduling',q:'Priority scheduling — starvation and aging',
-a:'Each process has a priority; highest priority runs first. Can be preemptive or non-preemptive. Problem: starvation — low-priority processes pushed to bottom of queue and never get CPU access. Solution: aging — if a process has been in the queue too long, dynamically increase its priority. In Linux: real-time processes (priority 0-99) always have higher priority than normal processes (100-139).'},
-
+a:'Each process has a priority; highest priority runs first. Can be preemptive or non-preemptive. Problem: starvation — low-priority processes pushed to bottom of queue and never get CPU access. Solution: aging — if a process has been in the queue too long, dynamically increase its priority. In Linux: real-time processes (priority 0-99) always have higher priority than normal processes (100-139). Smaller priority value = higher priority.'},
 {u:'Scheduling',q:'EDF — Earliest Deadline First (hard real-time)',
 a:'Preemptive. Task with earliest deadline runs next. Task notation: Tn = {phase, period, exectime}. Period = task must complete within each period. Phase = offset between periods. Example: T1={0,2,1} T2={0,5,2.5}. T1 needs 1s every 2s, T2 needs 2.5s every 5s. CPU utilisation = 1/2 + 2.5/5 = 100% — schedulable. EDF guarantees all deadlines met provided total CPU utilisation is at most 100%. Schedule computed for LCM of all periods.'},
-
 {u:'Scheduling',q:'Soft vs hard real-time scheduling',
 a:'Soft real-time: no guarantees, best effort. Missed deadlines affect user experience but are not catastrophic. Examples: multimedia streaming, video gaming. Linux supports via FCFS or RR. Hard real-time: scheduler MUST guarantee tasks complete by their deadlines. Safety-critical. Examples: avionics software, nuclear power control, medical devices. Linux: SCHED_DEADLINE policy. Soft RT policies: SCHED_FIFO and SCHED_RR. Hard RT policy: SCHED_DEADLINE.'},
-
 {u:'Scheduling',q:'Linux task priorities and niceness formula',
 a:'Smaller value = higher priority. Real-time (0 to 99): always higher priority than normal. Normal (100 to 139): anything without real-time requirement. Niceness formula: Priority = 20 + Niceness. Niceness range: [-19, 20], default = 0. Set niceness: nice -n 12 command. Change running process: renice -n 15 -p PID. Negative niceness requires sudo. All scheduling in Linux is preemptive — all threads can be interrupted.'},
-
 {u:'Scheduling',q:'Linux CFS — Completely Fair Scheduler',
 a:'For normal (non real-time) scheduling. Uses a red-black tree to model priority queues. Models an ideal precise multitasking CPU: for N runnable processes, each gets 1/N timeslice scaled by priority. Tracks virtual runtime per task. Task with smallest virtual runtime is at the head of the queue and is most deserving of CPU time. Attempts to balance virtual runtime across all tasks over time.'},
-
-{u:'Scheduling',q:'Linux scheduling commands',
-a:'Normal processes: nice -n 12 command (start with niceness 12). renice -n 15 -p PID (change running process). sudo required for negative niceness. Real-time: sudo chrt --rr 32 pwd (run with RR policy, priority 32). chrt -p PID (view attributes). Kernel preemption models: No Forced Pre-emption (Server), Voluntary Kernel Pre-emption (Desktop), Preemptible Kernel (Low-Latency Desktop), Full Preemptible Kernel (Real Time).'},
-
 {u:'Scheduling',q:'Scheduling: policy vs mechanism',
 a:'"A scheduling mechanism enables different processes to execute on the CPU. A scheduling policy determines which process should run and for how long." Mechanism = context switch (ability to swap threads). Policy = scheduling algorithm (FCFS, RR, SJF etc.). Pre-emption is a mechanism. Scheduling algorithms use pre-emption to realise a policy. Separate mechanism from policy so policies can change without redesigning mechanisms.'},
-
 {u:'Scheduling',q:'Gantt chart calculations — exam method',
-a:'Turnaround time = completion time minus arrival time. Waiting time = turnaround time minus burst time. Average waiting time = sum of waiting times divided by number of processes. Many policies require perfect information about the future — not always realistic. SJF and SRTF are clairvoyant. Know how to draw Gantt charts for FCFS, RR, SJF, SRTF, and Priority scheduling. These are common exam questions — easy to set and easy to check.'},
+a:'Turnaround time = completion time minus arrival time. Waiting time = turnaround time minus burst time. Response time = first time process gets CPU minus arrival time. Average waiting time = sum of waiting times divided by number of processes. Know how to draw Gantt charts for FCFS, RR, SJF, SRTF, and Priority scheduling. SJF and SRTF are clairvoyant (need future knowledge). These are common exam questions — easy to set and easy to check.'},
+{u:'Scheduling',q:'EDF schedulability test and scheduling calculation',
+a:'Check if a task set is schedulable: sum of (exectime / period) for all tasks must be <= 1. Example: T1={0,2,1} gives 1/2=0.5. T2={0,5,2.5} gives 2.5/5=0.5. Total=1.0 — exactly schedulable. At each time step: put all tasks whose next period has arrived into the run queue. Schedule the task with the earliest deadline. A task\'s deadline is its arrival time plus its period. LCM of periods = how far to compute before the schedule repeats.'},
+{u:'Scheduling',q:'What happens during a context switch — data saved',
+a:'For each thread, a thread_struct_t (MentOS) or thread_struct (Linux) stores: all general-purpose registers, program counter (PC), stack pointer (SP), status/flag registers, floating-point register state. Additionally the OS updates: page table base register (to switch virtual address space), TLB flush (required when switching address spaces). About 500 bytes on 32-bit ARM with hardware FPU. Context switch overhead measured in microseconds. lmbench measures it on real hardware.'},
 
 // =====================================================================
 // MEMORY MANAGEMENT
 // =====================================================================
 {u:'Memory',q:'Bare metal memory — five problems',
 a:'Limited Physical Memory: always need enough RAM for all processes and kernel. Shared Memory: any process can access the memory of any other. Fragmentation: direct allocation causes fragmentation and wasted RAM. No Protection: no rules on memory access, everything is read/write. Hardware Lock-in: different machines lay out physical memory differently, code is non-portable. Virtual memory solves all five of these problems.'},
-
 {u:'Memory',q:'Virtual memory — three key benefits',
 a:'"Virtual memory creates the illusion of a large, flat, main memory." Each process has its own virtual address space in Linux. 1. Process Isolation: impossible to modify another process\'s memory if you cannot address it directly. Invalid pointer access = segfault (crashes only the process, not the whole system). 2. Code Relocation: binaries load at the same virtual address. Relative offsets are static. 3. Hardware Abstraction: uniform hardware-independent view regardless of physical RAM changes.'},
-
 {u:'Memory',q:'MMU and address translation',
 a:'The MMU (Memory Management Unit) translates virtual to physical addresses at runtime. It interposes between processor and memory — called hardware-assisted dynamic address translation. User programs only ever see logical (virtual) addresses, never real physical addresses. Simple MMU: relocation register — value is added to every address generated by a user process. Virtual address space on 32-bit: 2^32 = 4GB total. Linux default: 3:1 or 2:2 user:kernel split.'},
-
+{u:'Memory',q:'Why is implementing the MMU in software a bad idea?',
+a:'Hardware MMU is essential for performance. Software MMU would mean: every single memory access (load/store instruction) triggers a context switch to kernel mode to perform the translation. On modern processors this happens billions of times per second. The overhead would make the system unusably slow. Hardware MMU does the translation in nanoseconds, in parallel with the CPU pipeline, with no software overhead. This is why address translation MUST be in hardware (the MMU chip).'},
 {u:'Memory',q:'Memory allocation in Linux — four methods',
 a:'Stack frame: automatic, created each function call, descending stack. Heap via malloc/new: allocates within available heap space. malloc, free, calloc, realloc manipulate space within the heap. brk/sbrk: brk is a pointer just above the heap. sbrk() grows the heap into unallocated space — like an OS-level malloc for a process. mmap: maps a file or device into memory. Can share same file across multiple process address spaces for inter-process memory sharing.'},
-
 {u:'Memory',q:'Paging — the fundamental mechanism',
 a:'Linux uses paging for memory management. Physical memory divided into fixed-size frames. Virtual memory divided into fixed-size pages. Page size = Frame size (allows direct mapping). Default Linux page size: 4KB. Non-contiguous allocation technique — avoids external fragmentation. Virtual address anatomy: page number (p) = index into page table. Page offset (d) = position within the page. Check page size: getconf PAGESIZE'},
-
 {u:'Memory',q:'Internal vs external fragmentation — with calculations',
-a:'External fragmentation: free memory broken into small non-contiguous blocks. Cannot allocate 30KB if free space is 3x10KB scattered. Paging eliminates external fragmentation. Internal fragmentation: allocated page not completely used — wasted space within a page. Example: page=2048B, process=72766B → 35 pages + 1086B used. Internal fragmentation = 2048 - 1086 = 962B. Worst case = 1 frame minus 1 byte. Average = half frame size. Smaller page sizes minimise internal fragmentation.'},
-
+a:'External fragmentation: free memory broken into small non-contiguous blocks. Cannot allocate 30KB if free space is 3x10KB scattered. Paging eliminates external fragmentation. Internal fragmentation: allocated page not completely used — wasted space within a page. Example: page=2048B, process=72766B. 35 full pages = 35x2048 = 71680B. Remaining = 72766-71680 = 1086B used. Internal fragmentation = 2048-1086 = 962B. Worst case = 1 frame minus 1 byte. Average = half frame size. Smaller page sizes minimise internal fragmentation.'},
 {u:'Memory',q:'Page table and page table walk',
-a:'The page table maps virtual pages to physical frames. Kept in main memory. Page-table base register (PTBR) points to it. Translation happens automatically through the MMU. Without TLB: every memory access requires 2 memory accesses (one for page table, one for data). Linux supports up to 5 levels since kernel 4.14: PGD → P4D → PUD → PMD → PTE. Default 32-bit RPi uses 2-level page table.'},
-
+a:'The page table maps virtual pages to physical frames. Kept in main memory. Page-table base register (PTBR) points to it. Translation happens automatically through the MMU. Without TLB: every memory access requires 2 memory accesses (one for page table, one for data/instruction). Linux supports up to 5 levels since kernel 4.14: PGD, P4D, PUD, PMD, PTE. Default 32-bit RPi uses 2-level page table.'},
 {u:'Memory',q:'Why hierarchical page tables?',
-a:'Single-level page tables are too large. For 32-bit address space with 4KB pages: entries = 2^32 divided by 2^12 = 1,048,576 entries. At 4 bytes per entry = 4MB per process just for the page table — too much. Solution: hierarchical (two-level). 10-bit first-level index, 10-bit second-level index, 12-bit page offset. Only allocate second-level tables when needed. Linux uses up to 5 levels. Larger address space = deeper hierarchy needed.'},
-
+a:'Single-level page tables are too large. For 32-bit address space with 4KB pages: entries = 2^32 / 2^12 = 1,048,576 entries. At 4 bytes each = 4MB per process just for the page table. Solution: hierarchical (two-level). 10-bit first-level index, 10-bit second-level index, 12-bit offset. Only allocate second-level tables when actually needed. Sparse processes only pay for the page tables they actually use. Linux uses up to 5 levels for 64-bit addressing.'},
 {u:'Memory',q:'TLB — Translation Lookaside Buffer and EAT formula',
-a:'TLB caches frequently used page table translations. All entries searched in parallel. One order of magnitude faster than a full page table walk. TLB Hit: translation found, skip page table walk. TLB Miss: do page table walk, update TLB. TLB flushed on context switch — expensive. EAT formula: teff = (alpha + beta) * h + 2*beta * (1-h) where alpha = TLB lookup time, beta = memory cycle time, h = hit ratio. If h=1: teff is approximately alpha + beta. If h=0: teff = 2*beta (two full memory accesses).'},
-
+a:'TLB caches frequently used page table translations. All entries searched in parallel. One order of magnitude faster than a full page table walk. TLB Hit: translation found, skip page table walk. TLB Miss: do page table walk, update TLB. TLB flushed on context switch. EAT formula (crib sheet notation): EAT = (tau + epsilon)*alpha + 2*tau*(1-alpha). tau = memory cycle time, epsilon = associative (TLB) lookup time, alpha = hit ratio. If alpha=1: EAT = tau + epsilon. If alpha=0: EAT = 2*tau (two full memory accesses — one page table, one data). TLB gives dramatic speedup at high hit ratios.'},
+{u:'Memory',q:'TLB EAT worked example',
+a:'Crib sheet formula: EAT = (tau + epsilon)*alpha + 2*tau*(1-alpha). Given: epsilon (associative lookup) = 3ms, tau (memory cycle) = 30ms. Compute EAT for alpha (hit ratio) = 0.5. EAT = (30+3)*0.5 + 2*30*(1-0.5). EAT = 33*0.5 + 60*0.5 = 16.5 + 30 = 46.5ms. Compare: no TLB (alpha=0): 2*30 = 60ms. Perfect TLB (alpha=1): 30+3 = 33ms. At alpha=0.5: 46.5ms — already a meaningful improvement. At typical alpha=0.98: EAT is approximately 33.5ms vs 60ms without TLB. The crib sheet question from past paper uses alpha=0.5 with these exact values.'},
 {u:'Memory',q:'Page table entry metadata bits (ARM Linux)',
 a:'L_PTE_VALID (bit 0): page resident in physical memory or swapped out? L_PTE_YOUNG (bit 1): accessed recently? Bits 2-5: cache residency. L_PTE_DIRTY (bit 6): written — needs flush to disk? L_PTE_RDONLY (bit 7): read-only page? L_PTE_USER (bit 8): accessible by user-mode processes? L_PTE_XN (bit 9): no-execute — prevents buffer overflow/code injection. L_PTE_SHARED (bit 10): shared between multiple address spaces? L_PTE_NONE (bit 11): protected from unprivileged access? View: /proc/PID/maps'},
-
 {u:'Memory',q:'Page fault — types and handling',
-a:'A page fault occurs when a process accesses a page not currently in physical RAM, or does something invalid. Handler checks in order: (1) Is the page within the process\'s address space? (2) Does the page allow the requested access mode? (3) If both OK — find the page on disk, load it into RAM, resume. Two types in Linux: Major fault — data must be read from backing storage (slow). Minor fault — data is resident but mapped to a different process (fast). Segfault = page fault where access is invalid.'},
-
+a:'A page fault occurs when a process accesses a page not currently in physical RAM, or does something invalid. Handler checks in order: (1) Is the page within the process\'s address space? (2) Does the page allow the requested access mode? (3) If both OK — find the page on disk, load it into RAM, resume process. Two types in Linux: Major fault — data must be read from backing storage (slow, disk I/O required). Minor fault — data is resident but mapped differently (fast, no disk I/O). Segfault = page fault where access is invalid.'},
 {u:'Memory',q:'Swapping, working set, and resident set',
-a:'Swapping: moving unrequired pages from RAM to backing storage (swap space) to free frames. Clean pages (already in backing store e.g. executable code) can be discarded. Dirty pages must be written first. Working Set Size (WSS): number of resident pages a process needs to function efficiently. Resident Set Size (RSS): actual number of resident pages. For effective execution: RSS must be at least WSS. Temporal locality: recently used pages are likely to be used again soon.'},
-
+a:'Swapping: moving unrequired pages from RAM to backing storage (swap space) to free frames. Clean pages (already on disk e.g. executable code) can be discarded. Dirty pages (modified, not yet on disk) must be written first. Working Set Size (WSS): number of resident pages a process needs to function efficiently. Resident Set Size (RSS): actual number of resident pages. For effective execution: RSS must be at least WSS. Temporal locality: recently used pages are likely to be used again soon — the foundation of caching strategies.'},
 {u:'Memory',q:'Page replacement policies — Random, NRU, LRU, Clock',
-a:'Random: randomly select page to evict. Simple, poor performance. NRU (Not Recently Used): R and M bits per page. 4 categories (0=best to evict): 0=not referenced/not modified, 1=not referenced/modified, 2=referenced/not modified, 3=referenced and modified. LRU (Least Recently Used): replace page not used for longest time. Uses timestamps or doubly-linked list. Linux uses active/inactive queue variant. Clock: pages in circular list with hand. If reference bit set, clear it and move on; else evict. Clock II: adds Clearing Hand C ahead of Victim Hand V by offset D.'},
-
+a:'Random: randomly select page to evict. Simple, poor performance. NRU (Not Recently Used): R and M bits per page. 4 categories: 0=not referenced and not modified (best to evict), 1=not referenced but modified, 2=referenced but not modified, 3=referenced and modified (worst to evict). LRU (Least Recently Used): replace page not used for longest time. Uses timestamps or doubly-linked list. Linux uses active/inactive queue variant. Clock: pages in circular list with hand — clear reference bit on first pass, evict on second.'},
+{u:'Memory',q:'Clock II page replacement',
+a:'Clock II adds a Clearing Hand C ahead of Victim Hand V. C = (V + D) mod N where D is the offset. When replacement needed: while reference bit of V is 1, advance both V and C, clear reference bit of C. Then replace V. If D is very small: similar to normal Clock (minimal advance clearing). As D increases: cleared bits have more time to be re-set if page is actually needed. Gives a more accurate picture of recently-used pages than basic Clock.'},
 {u:'Memory',q:'Thrashing and demand paging',
-a:'Thrashing: process has too few pages → very high page fault rate → constantly swapping pages in and out → low CPU utilisation → OS adds more processes → makes thrashing worse. Demand Paging (Linux default): just-in-time/lazy allocation. Process granted memory right before it requires it. Handled by Linux Memory Management Subsystem (MMS). When process accesses uninitialised location → page fault → MMS allocates memory. OOM Killer: if memory critically insufficient, kernel terminates the process with the highest score.'},
-
+a:'Thrashing: process has too few pages → very high page fault rate → constantly swapping pages in and out → low CPU utilisation → OS incorrectly adds more processes → makes thrashing worse. Swappiness 0-100 scale: higher = more swapping. Demand Paging (Linux default): just-in-time/lazy allocation. Physical memory granted right before it is required. Handled by Linux Memory Management Subsystem (MMS). Uninitialized access → page fault → MMS allocates memory. OOM Killer: if memory critically insufficient, kernel terminates the process with the highest score.'},
 {u:'Memory',q:'Copy-on-Write (COW)',
-a:'Optimisation for fork(). After fork(), child and parent have distinct virtual address spaces but both map to the same physical frames. No copying occurs at fork time — very fast. When either process performs a write, OS dynamically allocates a new frame for that written page. Uses page protection and page fault handling. Benefit: parent and child share pages until a write actually happens. This is why fork() is fast even for very large processes.'},
-
+a:'Optimisation for fork(). After fork(), child and parent have distinct virtual address spaces but both map to the same physical frames. No copying occurs at fork time — very fast. When either process performs a write, OS dynamically allocates a new frame for that written page only. Uses page protection (mark pages read-only) and page fault handling (fault on write triggers copy). Benefit: parent and child share pages until a write actually happens. This is why fork() is fast even for very large processes.'},
 {u:'Memory',q:'ASLR and NX bit — security in memory management',
-a:'NX (No-Execute) bit: marks a memory page as non-executable. Prevents stack/heap from being executable — blocks buffer overflow and code injection attacks. Does not stop all overflow attacks (e.g. return-to-libc). ASLR (Address Space Layout Randomisation): randomises position of stack, heap, and libraries in the virtual address space. Prevents overflow attacks that rely on knowing the location of executables in memory. Both are standard OS security features.'},
-
-{u:'Memory',q:'Linux iNode block structure — exam size calculation',
-a:'4KB blocks, 32-bit (4-byte) pointers → 1024 pointers per index block. 8 direct block pointers → max 2^15 bytes = 32,768 bytes (~32KB). 1 single indirect → additional 2^22 bytes (~4MB). 1 double indirect → additional 2^32 bytes (~4GB). 1 triple indirect → additional 2^42 bytes (greater than 4TB). Total max file size is greater than 4TB. Like hierarchical page tables — indirection allows addressing huge sizes without huge metadata structures.'},
-
+a:'NX (No-Execute) bit: marks a memory page as non-executable. Prevents stack/heap from being executable — blocks buffer overflow and code injection attacks. Does not stop all overflow attacks (e.g. return-to-libc). L_PTE_XN in ARM page table entries. ASLR (Address Space Layout Randomisation): randomises position of stack, heap, and libraries in the virtual address space at each process launch. Prevents overflow attacks that rely on knowing the location of executables in memory. Both are standard OS security features now enabled by default.'},
+{u:'Memory',q:'Physical addressing challenges vs virtual memory — exam answer',
+a:'Three challenges with physical addressing: (1) Limited physical memory — must have enough RAM for all processes and the kernel simultaneously. (2) No memory protection — any process can read/write any memory location, including other processes\' data. (3) Fragmentation — direct allocation leads to external fragmentation so memory may be available but not usable. Virtual memory solves all three: demand paging handles limited RAM, MMU enforces access control per page, and paging eliminates external fragmentation.'},
+{u:'Memory',q:'Temporal locality — definition and significance',
+a:'Temporal locality: if a memory location has been accessed recently, it is likely to be accessed again soon. Significance for virtual memory: the OS exploits temporal locality by keeping recently-used pages in physical RAM (the working set). Pages not accessed recently are candidates for eviction. Basis for LRU, NRU, and Clock replacement policies. Also justifies the TLB — recently translated virtual addresses are likely to be translated again soon. Without temporal locality, caching strategies would provide no benefit.'},
 {u:'Memory',q:'Large vs small page sizes — tradeoffs',
 a:'Smaller pages (4KB default): universally accepted as better for general use. Minimises internal fragmentation. Avoids excess metadata overhead. Clearing large pages causes kernel latency. Rarely accessed data in large pages is costly to move. Larger pages: require fewer TLB slots (TLB entries are high demand). Used for database systems and data-intensive workloads. Argument for 16KB: almost eliminates TLB misses for many apps without high memory cost. Larger pages always mean higher internal fragmentation.'},
+{u:'Memory',q:'In-memory caches — page, buffer, and swap',
+a:'Unused physical memory frames are used by the OS for data caching. Page cache: stores files in page-sized chunks after first access. OS reads ahead. Allows quicker access after first use. Buffer cache: optimises access to block devices. Interposes read/write calls to slow storage. Swap cache: tracks physical frames that have been written to swap files. When a swapped-out page is swapped back in it stays in the swap file slot. If page is modified, swap is expunged and rewritten (dirty). Reduces unnecessary swap write-backs.'},
 
 // =====================================================================
 // CONCURRENCY
 // =====================================================================
 {u:'Concurrency',q:'Concurrency vs parallelism — key definitions',
 a:'Concurrency: property of the workload — more than one task running at the same time on the system. Tasks may interleave on a single core. About user experience. Parallelism: property of the system — more than one CPU core allows truly simultaneous execution. About performance. "Concurrent programming is about user experience. Parallel programming is about performance." Running a parallel program on single-core only makes it slower — thread management overhead with no actual parallelism.'},
-
+{u:'Concurrency',q:'CPU-bound multi-threaded process: single-core vs multi-core',
+a:'Single-core: threads interleave via context switching. For a CPU-bound process, adding more threads adds context switch overhead without any actual speedup — threads are not doing useful work simultaneously. May actually be SLOWER than single-threaded. Multi-core: threads can execute truly simultaneously on different cores. CPU-bound processes benefit directly. Speedup is bounded by Amdahl\'s law — limited by the serial fraction of the code. I/O-bound processes benefit on single-core too because one thread can run while another is blocked.'},
 {u:'Concurrency',q:'Race condition — definition and example',
-a:'A race condition occurs when two or more processes try to change the same data and the sequence of change affects the result. Example: x[0]=3. P1: read R1,x[0] then add R1,R1,1 then write x[0],R1. P2: read R2,x[0] then sub R2,R2,1 then write x[0],R2. Sequential execution: result=3. Interleaved (P1 reads, P2 reads before P1 writes): result=4 — P2\'s write is lost. Operations that look atomic in high-level code are multiple machine instructions and a context switch can occur between any two of them.'},
-
+a:'A race condition occurs when two or more processes try to change the same data and the sequence of change affects the result. Example: x[0]=3. P1: read R1=x[0], R1=R1+1, write x[0]=R1. P2: read R2=x[0], R2=R2-1, write x[0]=R2. Sequential: P1 then P2 gives x[0]=3. Interleaved case: P1 reads (R1=3), P2 reads (R2=3), P2 writes (x[0]=2), P1 writes (x[0]=4) — result is 4. Final value depends on interleaving: possible results are 3, 4, or 2. Operations that look atomic in high-level code may be multiple machine instructions.'},
+{u:'Concurrency',q:'Worked race condition: what are all possible final values?',
+a:'Code: int x[1]={5}. Thread 1: R1=x[0]; R1=R1+1; x[0]=R1. Thread 2: R2=x[0]; R2=R2-1; x[0]=R2. Assume each line is atomic. Case 1 (T1 fully then T2 fully): T1 writes 6, T2 reads 6 then writes 5. Result: 5. Case 2 (T2 fully then T1 fully): T2 writes 4, T1 reads 4 then writes 5. Result: 5. Case 3 (T1 reads, T2 reads, T2 writes, T1 writes): T1 reads 5 (R1=5), T2 reads 5 (R2=5), T2 writes 4, T1 writes 6. Result: 6. Case 4 (T2 reads, T1 reads, T1 writes, T2 writes): T2 reads 5 (R2=5), T1 reads 5 (R1=5), T1 writes 6, T2 writes 4. Result: 4. Possible final values: 4, 5, or 6.'},
 {u:'Concurrency',q:'Critical region and serialised access',
 a:'Critical region: an area of code that accesses a common shared resource. Only one process or thread should be in a critical region at a time — concurrent access causes inconsistency. Serialised access: ensures only one thread or process executes a critical region at a time, even if code does not modify shared resources. Provided by the OS, used by the application. The OS provides the mechanisms. The programmer must use them correctly — bad design leads to deadlock.'},
-
 {u:'Concurrency',q:'Lock and mutex — rules and syntax',
-a:'A lock ensures mutual exclusion — only one thread holds it at a time. Rules: if lock is owned, requesting thread blocks until owner releases. If lock is free, requesting thread is granted ownership. On release, if threads are blocked, one is granted ownership. Mutex in C: #include pthread.h. pthread_mutex_t lock; pthread_mutex_lock(&lock); — critical region — pthread_mutex_unlock(&lock); Mutex = binary semaphore. Mutex is also called a binary semaphore or just "lock".'},
-
+a:'A lock ensures mutual exclusion — only one thread holds it at a time. Rules: if lock is owned, requesting thread blocks until owner releases. If lock is free, requesting thread is granted ownership. On release, if threads are blocked, one is granted ownership. Mutex in C: pthread_mutex_t lock; pthread_mutex_lock(&lock); /* critical region */ pthread_mutex_unlock(&lock); Mutex = binary semaphore. A mutex is appropriate when only one thread should access a resource at a time (e.g. a shared counter).'},
 {u:'Concurrency',q:'Semaphore — definition and syntax',
-a:'A semaphore is a counter controlling access to a shared resource. Counter atomically incremented/decremented. If decrement makes value less than 1 then block; resume when value is at least 1. Modern processors provide atomic instructions for efficient implementation. In C: #include semaphore.h. sem_t lock; sem_wait(&lock) to acquire (decrement). Critical region. sem_post(&lock) to release (increment). Variants: sem_trywait(), sem_timedwait(). Named semaphores: two processes share via same name string.'},
-
+a:'A semaphore is a counter controlling access to a shared resource. Counter atomically incremented/decremented. If decrement makes value less than 1 then block; resume when value is at least 1. Allows N threads simultaneously if initialised to N. In C: sem_t lock; sem_wait(&lock) to acquire (decrement). sem_post(&lock) to release (increment). Variants: sem_trywait(), sem_timedwait(). Named semaphores allow two different processes to share a semaphore by name. Use semaphore (not mutex) when multiple threads should access simultaneously (e.g. a shared read-only resource).'},
+{u:'Concurrency',q:'Choosing the right synchronisation primitive — exam scenarios',
+a:'Shared counter incremented by multiple kernel threads: use spin lock (kernel context, very short critical section, busy-wait acceptable since wait is brief, no sleeping in interrupt context). Thread pool shared task queue (one thread accesses at a time but multiple workers allowed to run): use mutex to protect queue access — serialises queue access. Condition variable: when threads should wait for a condition on the actual value of data, not just mutual exclusion. Always pair condition variables with a mutex. Semaphore: when a fixed number of threads (greater than 1) should access simultaneously.'},
 {u:'Concurrency',q:'Deadlock — four Coffman conditions',
 a:'Deadlock: two or more processes permanently blocked, each waiting for a resource held by another. All four conditions must hold simultaneously: (1) Mutual Exclusion — only one thread can use a resource at a time. (2) Hold and Wait — a thread holding at least one resource is waiting to acquire more resources held by other threads. (3) No Preemption — resource can only be released voluntarily by the holding thread. (4) Circular Wait — T0 waits for T1, T1 waits for T2, ..., Tn waits for T0. OS responses: prevent (Banker\'s Algorithm), recover (terminate processes), or let program hang.'},
-
+{u:'Concurrency',q:'Blocking vs non-blocking messages',
+a:'Blocking (synchronous): sender sends message and stops execution waiting to receive a response. Receiver can also block waiting until a message arrives. Both ends synchronise at the communication point. Non-blocking (asynchronous): sender sends message and continues execution. At some point later receives a response asynchronously. More complex to program correctly but more efficient. Producer-consumer: if consumer holds the lock and blocks, producer is also blocked even though it could produce — can cause deadlock if not careful.'},
 {u:'Concurrency',q:'Kernel synchronisation primitives',
-a:'Atomics: Read-Modify-Write (RMW) operations — no write between read and write. Operate on atomic_t or bitmaps. Memory Barriers: prevent compiler/CPU reordering of memory accesses. Types: general, mandatory, SMP conditional, implicit. Spin Locks: loop doing nothing until lock acquired (busy wait). Holds CPU — only use when wait is very short. Futex (Fast User-Space Mutex): Linux-specific. Entirely user-space when no contention. Kernel only involved for contended case. Lightweight and scalable. Kernel Mutex three-state: Unlocked=1, Locked no waiters=0, Locked with waiters=-1.'},
-
+a:'Atomics: Read-Modify-Write (RMW) operations — no write between read and write. Operate on atomic_t or bitmaps. Memory Barriers: prevent compiler/CPU reordering of memory accesses. Types: general, mandatory, SMP conditional, implicit. Spin Locks: loop doing nothing until lock acquired (busy wait). Holds CPU — only use when wait is very short. Futex (Fast User-Space Mutex): Linux-specific. Entirely user-space when no contention. Kernel only involved for contended case. Lightweight and scalable. Kernel Mutex states: Unlocked=1, Locked no waiters=0, Locked with waiters=-1.'},
 {u:'Concurrency',q:'POSIX threads (pthreads) — three key functions',
-a:'pthread_create(pthread_t *thread_id, const pthread_attr_t *attr, void *(*function)(void *), void *arguments) — creates a thread. Returns 0 on success. pthread_exit(void *retval) — terminates calling thread. NEVER call exit() from a thread — it kills the entire process and all threads. pthread_join(pthread_t thread, void **thread_return) — waits for thread to terminate and gets its return value. Include: pthread.h. Compile with: -lpthread flag.'},
-
+a:'pthread_create(pthread_t *id, const pthread_attr_t *attr, void *(*fn)(void *), void *args): creates a thread. Returns 0 on success. pthread_exit(void *retval): terminates calling thread. NEVER call exit() from a thread — it kills the entire process and all threads. pthread_join(pthread_t thread, void **retval): waits for thread to terminate and optionally gets its return value. Returns 0 on success. Include: pthread.h. Compile with: -lpthread flag. New thread may start running before parent executes next statement.'},
 {u:'Concurrency',q:'What threads share vs own',
 a:'Threads SHARE (process-wide): PID, parent PID, group/session ID, open file descriptors, signal dispositions, file mode masks, current and root directory, resource limits, CPU consumption records, code, data, and heap. Threads OWN (per-thread): thread ID, signal mask, errno, scheduling policy and priority, stack, registers, and program counter. The main thread is created by the OS when the process is created and it executes main().'},
-
 {u:'Concurrency',q:'Amdahl\'s law',
-a:'"The overall performance improvement from optimising one part is limited by the fraction of time that part is used." Formula: Speedup = 1 divided by (S + (1-S)/N) where S = fraction of code that is sequential and N = number of processing cores. Example: 75% parallel, 25% serial — moving from 1 to 2 cores gives 1.6x speedup, not 2x. As N approaches infinity, speedup approaches 1/S. Serial portion has disproportionate effect on performance gains. More cores is not always better.'},
-
+a:'"The overall performance improvement from optimising one part is limited by the fraction of time that part is used." Formula: Speedup = 1 / (S + (1-S)/N) where S = fraction of code that is sequential and N = number of processing cores. Example: 75% parallel (S=0.25) on 2 cores: Speedup = 1/(0.25 + 0.75/2) = 1/0.625 = 1.6x. As N approaches infinity: speedup approaches 1/S. Serial portion has disproportionate effect on performance gains. More cores is not always better.'},
 {u:'Concurrency',q:'Data parallelism vs task parallelism',
 a:'Data parallelism: split data across cores, same operation on each subset. SIMD (Single Instruction Multiple Data). Usually no dependencies. Works well on GPUs. Examples: matrix multiplication, GPU rendering, big data analytics. Task parallelism: different functions execute on different data. MIMD (Multiple Instruction Multiple Data). Tasks may be dependent on each other. Works well on CPUs and multi-core processors. Examples: web servers, operating systems, multithreaded applications.'},
-
 {u:'Concurrency',q:'OpenMP, MPI, and OpenCL',
-a:'OpenMP: multithreading via compiler directives (#pragma). #pragma omp parallel for (parallel loop). #pragma omp critical (one thread at a time — overhead like a lock). #pragma omp atomic (atomic update of single memory location, more efficient). #pragma omp barrier (all threads wait at this point). MPI (Message Passing Interface): designed for HPC. Each task has own private memory. Communication via messages. No shared state. Complex API. OpenCL: open standard for parallel computing across platforms including GPUs. Superseded by SYCL.'},
-
+a:'OpenMP: multithreading via compiler directives. #pragma omp parallel for (parallel loop). #pragma omp critical (one thread at a time — overhead like a lock, multiple critical sections are mutually exclusive). #pragma omp atomic (atomic update of single memory location, more efficient than critical). #pragma omp barrier (all threads wait at this point). MPI (Message Passing Interface): each task has own private memory, communication via messages, no shared state. Complex API. OpenCL: open standard for parallel computing across platforms including GPUs. Superseded by SYCL.'},
 {u:'Concurrency',q:'Benefits of multi-threading',
 a:'Responsiveness: continued execution if part of process is blocked — important for user interfaces. Resource Sharing: threads share process resources, easier than IPC or message passing. Economy: cheaper than creating a new process. Thread context switch has lower overhead than process context switch. Scalability: process can exploit multicore architectures. Linux kernel schedules threads not processes. In Linux there is no formal distinction between processes and threads — everything is a runnable task.'},
+{u:'Concurrency',q:'Spin lock vs mutex — when to use which',
+a:'Spin lock: busy-waits in a loop. Occupies CPU while waiting. Use when: (1) in kernel context where sleeping is not allowed (e.g. interrupt handler), (2) critical section is very short (microseconds), (3) wait time is expected to be shorter than the cost of a context switch. Mutex: thread sleeps while blocked, does not consume CPU. Use when: (1) critical section may take longer, (2) in user space, (3) CPU efficiency matters. Rule: if you can\'t sleep (interrupt context), use spin lock. If you can sleep, prefer mutex.'},
 
 // =====================================================================
 // I/O
 // =====================================================================
 {u:'IO',q:'I/O hardware concepts — ports, buses, controllers',
 a:'Port: connection point for a device. Bus: daisy chain or shared direct access. PCI/PCIe common in PCs. SAS for disks. Controller (host adapter): electronics operating port/bus/device. Contains processor, microcode, private memory, bus controller. Device registers (1-4 bytes or FIFO buffer): data-in register, data-out register, status register, control register. I/O types: Direct I/O instructions, or Memory-mapped I/O — device data and command registers mapped to processor address space (especially for graphics). Find devices: lsblk or lsusb (Linux).'},
-
 {u:'IO',q:'Three Linux device types',
 a:'View with: cat /proc/devices. Character devices: stream of bytes, file-based abstraction (read/write), not buffered. Examples: keyboard, serial ports, terminal. Block devices: fixed size chunks (blocks) of data, storage media based abstraction, subject to buffering. Examples: hard disk, SSD, USB drive. Net devices: operate on packets — covered in networking lecture. Device driver layer hides differences among I/O controllers from the kernel and presents a uniform interface to the I/O subsystem.'},
-
 {u:'IO',q:'Three device management strategies',
-a:'1. Polling: CPU repeatedly reads status register until device is ready. Busy-wait — wasteful if device is slow, efficient if fast. Happens in 3 instruction cycles: read status, logical-AND status bit, branch if not zero. 2. Interrupt-Driven I/O: device triggers CPU interrupt when ready. CPU does other work while waiting. Handler registered with request_irq() in Linux. 3. DMA (Direct Memory Access): DMA controller transfers data directly between device and memory, bypassing the CPU entirely. CPU only interrupted on completion.'},
-
+a:'1. Polling: CPU repeatedly reads status register until device is ready. Busy-wait — wasteful if device is slow, efficient if fast. 3 instruction cycle loop: read status, logical-AND status bit, branch if not zero. 2. Interrupt-Driven I/O: device triggers CPU interrupt when ready. CPU does other work while waiting. Handler registered with request_irq() in Linux. 3. DMA (Direct Memory Access): DMA controller transfers data directly between device and memory, bypassing the CPU entirely. CPU only interrupted on completion.'},
 {u:'IO',q:'DMA — six steps',
 a:'1. OS writes DMA command block into memory: source address, destination address, count, read/write mode. 2. OS writes location of command block to DMA controller. 3. DMA controller takes bus mastering — grabs bus from CPU (cycle stealing). 4. DMA controller transfers data directly between device and memory. 5. CPU continues other work during the transfer. 6. DMA controller sends interrupt to CPU when transfer is complete. DVMA (virtual DMA): aware of virtual addresses — even more efficient. Much better than programmed I/O one byte at a time.'},
-
 {u:'IO',q:'Blocking vs non-blocking vs asynchronous I/O',
 a:'Blocking I/O: waits until operation fully completes. Thread that initiated I/O cannot do useful work while waiting. Non-blocking I/O: returns immediately with as much data as currently available. Returns error code if no data transfer is possible right now. Unix flag: O_NONBLOCK. Asynchronous I/O: process continues running while I/O executes in background. I/O subsystem signals process when complete. Difficult to use correctly but most powerful approach.'},
-
 {u:'IO',q:'Why is I/O slow? Buffering as the solution.',
 a:'I/O is slow because of: constant need for context switches, and copying data between kernel memory and user memory. Buffering improves performance: batches small units of data into larger units and processes in bulk. A buffer is temporary storage for data being transferred from one place to another. Buffering quantizes data processing. "Everything is a file" principle: device_file_read transfers data. Devices registered/unregistered via register_chrdev. Every device gets a numeric ID.'},
-
 {u:'IO',q:'Interrupt handling in Linux',
 a:'View interrupt stats: watch -d -n 1 cat /proc/interrupts. Register handler: request_irq(irq_number, handler_fn, flags, device_name, dev_id). Some handlers are re-entrant (can be interrupted by another interrupt). Others are non-interruptible. Interrupts also used for: exceptions (divide-by-zero, page faults), system calls (via software trap). Multi-CPU systems can process interrupts concurrently. MentOS reference: irq_install_handler registers a new interrupt handler.'},
-
-{u:'IO',q:'Application I/O interface — device variation',
-a:'I/O system calls encapsulate device behaviours in generic classes. Device-driver layer hides differences among I/O controllers from the kernel. New devices talking already-implemented protocols need no extra work. Devices vary in many dimensions: character-stream or block, sequential or random-access, synchronous or asynchronous, sharable or dedicated, speed of operation, read-write vs read-only vs write-only. Each OS has its own I/O subsystem structures and device driver frameworks.'},
+{u:'IO',q:'Application I/O interface — device variation and "everything is a file"',
+a:'I/O system calls encapsulate device behaviours in generic classes. Device-driver layer hides differences among I/O controllers from the kernel. New devices talking already-implemented protocols need no extra work. "Everything is a file" in Linux: standard abstraction for character, block, and network devices. Each resource accessible via file descriptor. Significance: (1) standard abstraction for different resource types, (2) consistency across the whole system, (3) simple administration — every file has a file descriptor (a number). Exception: networking — "everything is NOT a file."'},
+{u:'IO',q:'DMA justification — when is it necessary?',
+a:'DMA is necessary for devices that transfer large amounts of data. Without DMA: CPU must execute a load/store instruction for every byte (programmed I/O). For a 1MB transfer at 1 byte per instruction, that is 1 million CPU instructions wasted. With DMA: CPU sets up the transfer (write command block), DMA controller does the work independently, CPU is interrupted only at completion. Essential for: disk transfers, network packets, graphics buffers, audio. Cycle stealing: DMA uses the bus briefly but leaves CPU mostly free. Far more efficient than byte-at-a-time programmed I/O.'},
 
 // =====================================================================
 // FILESYSTEMS
 // =====================================================================
 {u:'Filesystems',q:'Why filesystems? Definition and four reasons.',
 a:'"In an OS, a filesystem is the method of organising, storing, and accessing files on a storage medium." Four reasons: Data Persistence — unlike RAM (volatile), filesystems survive power-off. Data Organisation — structure, hierarchy, naming. Metadata — info about the data (who, when, permissions). Protection — access permissions, ownership. "Everything is a file" in Linux: standard abstraction, consistency, simple administration. Each file has a single file descriptor.'},
-
-{u:'Filesystems',q:'File attributes (metadata)',
-a:'Name — only human-readable information kept. Identifier — unique numeric tag within filesystem. Type — needed for systems supporting different types. Location — pointer to file location on device. Size — current file size. Protection — who can read/write/execute. Time, date, and user identification — for protection, security, and usage monitoring. Kept in the directory structure on disk. A directory is also a file! Both the directory structure and the files reside on disk.'},
-
+{u:'Filesystems',q:'File attributes (metadata) — six key ones',
+a:'Name — only human-readable information kept. Identifier — unique numeric tag within filesystem. Type — needed for systems supporting different types. Location — pointer to file location on device. Size — current file size. Protection — who can read/write/execute. Time, date, and user identification — for protection, security, and usage monitoring. Kept in the directory structure on disk. A directory is also a file! Both directory structure and files reside on disk.'},
 {u:'Filesystems',q:'File operations (lifecycle)',
 a:'fopen(path, mode) — search directory on disk for entry, move to memory. fclose(fptr) — move entry from memory back to directory on disk. fread(ptr, size, count, stream) — read at read pointer. fwrite(ptr, size, count, stream) — write at write pointer. fseek(stream, offset, whence) — reposition within file. ftruncate(fd, length) — truncate file. remove(path) — delete file. Open-file table tracks all open files: file pointer, file-open count, disk location cache, access rights.'},
-
 {u:'Filesystems',q:'Directory types — five structures',
-a:'Single-Level: one directory for all users. Naming conflicts, no grouping. Two-Level: separate directory per user. Path names, same filenames for different users. No grouping. Tree-Structure: path names, efficient sharing, grouping capability. Introduces current working directory. Acyclic-Graph: shared subdirectories and files. Same file can have multiple names (aliasing). Uses links to resolve pointers. General Graph: allows cycles. Requires garbage collection or cycle detection algorithm. Reference counting for safe deletion.'},
-
+a:'Single-Level: one directory for all users. Naming conflicts, no grouping. Two-Level: separate directory per user. Path names, same filenames for different users. No grouping. Tree-Structure: path names, efficient sharing, grouping capability. Introduces current working directory. Acyclic-Graph: shared subdirectories and files. Same file can have multiple names (aliasing). Uses links to resolve pointers. Dangling pointer if owner deletes file. General Graph: allows cycles. Requires garbage collection or cycle detection algorithm. Reference counting for safe deletion.'},
+{u:'Filesystems',q:'Two-level vs tree-structured directories',
+a:'Two-level: separate directory for each user. Each user has their own namespace. Can have same filename for different users. No ability to group related files within a user\'s directory. Still cannot share files across users easily. Tree-structured: arbitrary hierarchy of directories and subdirectories. Any depth of nesting. Current working directory concept. Grouping capability: can organise files by project, type, etc. Same filename can exist at different paths. The key difference: two-level is a flat hierarchy (one level per user), tree is a full recursive hierarchy.'},
+{u:'Filesystems',q:'Acyclic-graph vs general-graph directories',
+a:'Acyclic-graph: allows shared files and directories. Same file can have multiple names (hard links or symbolic links). Resolving a link follows the pointer to the actual file. Problem: if original file is deleted, dangling pointer remains. Reference counting solves this — only delete when count reaches zero. General-graph: allows cycles (directory A points to directory B which points back to A). More flexible than acyclic but requires: cycle detection algorithm every time a link is added, or garbage collection for safe deletion of cyclic structures. More complex but more expressive.'},
 {u:'Filesystems',q:'Linux file permissions — numeric method',
-a:'Three classes: Owner, Group, Others. Three access types: r (read), w (write), x (execute). For files: r=view/copy, w=add/modify/delete, x=run. For directories: r=list files, w=create/rename/delete files, x=descend/search. Numeric method: each digit = sum of 4 (read) + 2 (write) + 1 (execute). Example: 0644 means owner rw, group r, others r. 4750 means SetUID + owner rwx + group r-x + others none. 1777 means all permissions plus sticky bit. Use chmod to set.'},
-
+a:'Three classes: Owner, Group, Others. Three access types: r (read=4), w (write=2), x (execute=1). Numeric: each digit = sum of applicable values. Example: 0644 means owner=rw(6), group=r(4), others=r(4). 0755 means owner=rwx(7), group=rx(5), others=rx(5). For files: r=view, w=modify, x=run. For directories: r=list, w=create/delete entries, x=enter/traverse. Use chmod to set: chmod 644 file. setuid bit (4) allows running as file owner. sticky bit (1) on directories prevents deletion by non-owners.'},
 {u:'Filesystems',q:'File allocation methods — contiguous, linked, indexed',
-a:'Contiguous: file occupies contiguous blocks. Best performance, supports random access. Problems: external fragmentation, must know file size upfront. Linked: each block contains pointer to next block. No external fragmentation. Problems: no random access, reliability (pointer loss), each block loses 4 bytes to pointer so only 508 bytes data per 512-byte block. Indexed: each file has its own index block of pointers to data blocks. Supports random access, no external fragmentation, but overhead of index block. Linux inodes use indexed with multiple levels of indirection.'},
-
+a:'Contiguous: file occupies contiguous blocks. Best performance, supports random access. Problems: external fragmentation, must know file size upfront. Linked: each block contains pointer to next block. No external fragmentation. Problems: no random access, reliability (pointer loss), each block loses P bytes to pointer so only block_size - P bytes of data per block. Indexed: each file has its own index block of pointers to data blocks. Supports random access, no external fragmentation, but overhead of index block. Linux inodes use indexed with multiple levels of indirection.'},
+{u:'Filesystems',q:'Max file size calculation — single-level index block',
+a:'Given: 4-byte pointers, 4KB block size. Single-level index block: one full block of pointers. Pointers per index block = 4096 / 4 = 1024. Each pointer addresses one 4KB data block. Max file size = 1024 * 4KB = 4MB = 4,194,304 bytes. For larger files: use double-indirect (index block points to index blocks). Double-indirect max = 1024 * 1024 * 4KB = 4GB. Triple-indirect max = 1024 * 1024 * 1024 * 4KB = 4TB. To get to 4TB from single-level: add double and triple indirection.'},
 {u:'Filesystems',q:'Linux iNode structure — full size calculation',
-a:'4KB block size, 32-bit (4-byte) pointers → 1024 pointers per index block. 8 direct block pointers → max 32,768 bytes (2^15). 1 single indirect → additional 2^22 bytes (~4MB). 1 double indirect → additional 2^32 bytes (~4GB). 1 triple indirect → additional 2^42 bytes (greater than 4TB). Total max file size is greater than 4TB. FCB/inode also stores: inode number, permissions, size, timestamps. Same principle as hierarchical page tables — indirection scales to address huge sizes.'},
-
+a:'4KB blocks, 32-bit (4-byte) pointers → 1024 pointers per index block. 8 direct block pointers → max 2^15 bytes = 32,768 bytes (~32KB). 1 single indirect → additional 1024 * 4KB = 2^22 bytes (~4MB). 1 double indirect → additional 1024^2 * 4KB = 2^32 bytes (~4GB). 1 triple indirect → additional 1024^3 * 4KB = 2^42 bytes (greater than 4TB). Total max file size is greater than 4TB. FCB/inode also stores: inode number, permissions, size, timestamps, ownership.'},
 {u:'Filesystems',q:'Filesystem layers — bottom to top',
-a:'Device Drivers (I/O control layer): send low-level hardware commands like "read drive1, cylinder 72, track 2, sector 10, into memory location 1060". Basic File System: given command "retrieve block 123". Manages memory buffers and caches. File Organisation Module: understands files and logical/physical block mapping. Manages free space and disk allocation. Logical File System (top): manages metadata. Translates filename to file number to handle to location. Directory management. Protection. Layering reduces complexity but adds overhead.'},
-
+a:'Device Drivers (I/O control layer): send low-level hardware commands like "read drive1, cylinder 72, track 2, sector 10, into memory location 1060". Basic File System: given command "retrieve block 123". Manages memory buffers and caches. File Organisation Module: understands files and logical/physical block mapping. Manages free space and disk allocation. Logical File System (top): manages metadata. Translates filename to file number to handle to location. Directory management. Protection. Layering reduces complexity but adds overhead and can decrease performance.'},
 {u:'Filesystems',q:'Free space management and page-frame-sector relationship',
-a:'Bit vector (bit map): each block has a bit — 0=free, 1=occupied. Simple and efficient for finding contiguous free blocks. Free-space list: linked list of free blocks. Page-Frame-Sector relationship: page size = frame size = sector size (usually all 4096 bytes). Example: 1TB disk (2^40 bytes) gives 2^28 sectors meaning each sector pointer requires 28 bits (4 bytes). Larger the disk = more space needed to address it. On-disk structures: boot control block, volume control block (superblock), directory structure, FCBs (inodes).'},
-
+a:'Bit vector (bit map): each block has a bit — 0=free, 1=occupied. Simple and efficient for finding contiguous free blocks. Free-space list: linked list of free blocks. Page-Frame-Sector relationship: page size = frame size = sector size (usually all 4096 bytes = 4KB). Example: 1TB disk (2^40 bytes) gives 2^28 sectors meaning each sector pointer requires 28 bits (4 bytes). Larger the disk = more space needed to address it. On-disk structures: boot control block, volume control block (superblock), directory structure, FCBs (inodes).'},
 {u:'Filesystems',q:'Filesystem mounting and types',
-a:'A filesystem must be mounted before it can be accessed. Unmounted FS mounted at a mount point: /mnt in Unix, drive letter in Windows. Linux filesystem types on a Debian VM: tmpfs — memory-based volatile FS for fast temporary I/O. cgroup2 — supports container disk mappings. proc — kernel interface to process structures. ext4 — general purpose filesystem. debugfs/tracefs — kernel debugging/tracing. FAT (File Allocation Table): DOS/Windows filesystem, covered in labs — this is examinable.'},
-
+a:'A filesystem must be mounted before it can be accessed. Unmounted FS mounted at a mount point: /mnt in Unix, drive letter in Windows. Consider USB disks — they are mounted on plug-in. Linux filesystem types on a Debian VM: tmpfs — memory-based volatile FS for fast temporary I/O. cgroup2 — supports container disk mappings. proc — kernel interface to process structures. ext4 — general purpose filesystem. debugfs/tracefs — kernel debugging/tracing. FAT (File Allocation Table): DOS/Windows filesystem, covered in labs — this is examinable.'},
 {u:'Filesystems',q:'File access methods',
-a:'Sequential Access: read next, write next, reset. Must read from beginning, cannot jump ahead. Direct Access (n = logical record number): read n, write n, position to n, read next, rewrite n. Requires fixed-length logical records. Side Index: additional index structure separate from primary metadata. For faster access to specific attributes. Keep index in memory for fast location of data. Sequential access simulated on direct-access file using a currentRecord counter. Both methods can be combined to create other access methods.'},
-
+a:'Sequential Access: read next, write next, reset. Must read from beginning. Simple but no random access. Direct Access (n = logical record number): read n, write n, position to n, read next, rewrite n. Requires fixed-length logical records. Supports random access. Sequential access simulated on direct-access file using a currentRecord counter: reset = currentRecord=0; read next = read currentRecord, increment. Side Index: additional index structure in memory for faster access to specific attributes. Keep index in memory for fast location.'},
+{u:'Filesystems',q:'Filesystem design for embedded/resource-limited devices',
+a:'For a resource-limited embedded sensor device: recommend FAT (File Allocation Table) or a simple flat filesystem. Reasons: FAT has minimal RAM requirements for the file allocation table. Simple implementation — no complex tree structures or journaling. Widely supported (can be read by any OS for data retrieval). Low overhead for small numbers of files. No need for complex permission systems on single-user embedded devices. Alternatively: JFFS2/YAFFS for NAND flash devices — includes wear levelling. Trade-off: simplicity and low overhead over features and reliability.'},
 {u:'Filesystems',q:'NAND flash and modern storage',
-a:'NAND: block-level access, cheaper, slower, needs caching mechanisms to speed data access, wear levelling (distributes writes evenly to prolong cell life), error correction required. Used in SSDs and USB drives. NOR: one-byte random access, faster reads, expensive, longer lasting. Used for bootloaders and direct code execution. Both are flash memory chips with a controller. Error correction and wear levelling are what make NAND flash reliable enough for storage despite its limitations.'},
+a:'NAND: block-level access, cheaper, slower, needs caching to speed data access, wear levelling (distributes writes evenly to prolong cell life), error correction required. Used in SSDs and USB drives. NOR: one-byte random access, faster reads, expensive, longer lasting. Used for bootloaders and direct code execution. Both are flash memory chips with a controller. Error correction and wear levelling are what make NAND flash reliable enough for storage despite its limitations. SSD controller manages wear levelling transparently from the OS.'},
 
 // =====================================================================
 // NETWORKING
 // =====================================================================
 {u:'Networking',q:'Distributed systems — definition and motivation',
 a:'"A distributed system is a collection of loosely coupled nodes interconnected by a communications network." Nodes: processors, computers, machines, hosts. Site = location. Node = specific system. Configurations: client-server, peer-to-peer, hybrid. Communication via message passing. Motivation: Resource sharing (files, databases, GPUs). Computation speedup (distribute sub-computations, load balancing). Reliability (detect/recover from site failure, transfer function). LAN (IEEE 802.3 Ethernet, 802.11 WiFi) vs WAN (internet, backbone providers at 40-100Gbps).'},
-
 {u:'Networking',q:'OSI layer model — all seven layers',
-a:'7 — Application: HTTP, FTP, DNS, SMTP. 6 — Presentation: encoding, encryption. 5 — Session: session management. 4 — Transport: TCP, UDP (end-to-end delivery). 3 — Network: IP (routing between networks). 2 — Data Link: Ethernet frames (node-to-node). 1 — Physical: bits on wire. In TCP/IP: Session and Presentation layers are NOT present as distinct layers. Linux networking stack uses syscalls between Transport and Application layers.'},
-
+a:'7 — Application: HTTP, FTP, DNS, SMTP. 6 — Presentation: encoding, encryption. 5 — Session: session management. 4 — Transport: TCP, UDP (end-to-end delivery). 3 — Network: IP (routing between networks). 2 — Data Link: Ethernet frames (node-to-node). 1 — Physical: bits on wire. In TCP/IP: Session and Presentation layers are NOT present as distinct layers. Linux networking stack uses syscalls between Transport and Application layers. "Everything is NOT a file" — networking is the exception.'},
 {u:'Networking',q:'Linux networking stack and OS role',
 a:'OS manages the networking software stack and networking hardware devices. Networking software and hardware execute within the kernel in privileged mode. Many independent applications want to use the networking stack — OS manages the access. System calls used between Transport and Application layers. Transport layer is protocol-agnostic from the application\'s perspective. Network protocols communicate through sockets. Device driver provides device-agnostic interface to link layer. "Everything is NOT a file" — networking is an exception to this Linux principle.'},
-
 {u:'Networking',q:'Sockets — definition and types',
-a:'"A socket is an endpoint for communication." socket() returns a file descriptor (small integer) representing the endpoint. Each endpoint must be bound to address info; two endpoints must be connected for information to flow. Domain: AF_INET (IPv4). Two types: SOCK_STREAM — TCP: sequenced, reliable, connection-based byte streams. SOCK_DGRAM — UDP: connectionless, unreliable, fixed maximum length messages. Syntax: #include sys/socket.h. int socket(int domain, int type, int protocol);'},
-
+a:'"A socket is an endpoint for communication." socket() returns a file descriptor (small integer) representing the endpoint. Each endpoint must be bound to address info; two endpoints must be connected for information to flow. Domain: AF_INET (IPv4). Two types: SOCK_STREAM — TCP: sequenced, reliable, connection-based byte streams. SOCK_DGRAM — UDP: connectionless, unreliable, fixed maximum length messages. Protocol=0 for default. Syntax: #include sys/socket.h. int socket(int domain, int type, int protocol);'},
 {u:'Networking',q:'Stream socket lifecycle (TCP)',
-a:'Server steps: socket() to create descriptor. setsockopt() to configure options. bind() to associate socket with local port. listen() to enable connection requests. accept() to wait for a client connection request. Client steps: socket() then connect() to request connection to server. Both: recv()/send() to exchange data. close() to close the connection. Either process can close first. Time flows from top to bottom in this sequence.'},
-
+a:'Server steps: socket() to create descriptor. setsockopt() to configure options. bind() to associate socket with local port. listen() to enable connection requests. accept() to wait for a client connection request. Client steps: socket() then connect() to request connection to server. Both: recv()/send() to exchange data. close() to close the connection. Either process can close first.'},
 {u:'Networking',q:'Datagram socket lifecycle (UDP)',
-a:'No connection needed — just send and receive. Server: socket() then setsockopt() then bind() then recvfrom() loop then close(). Client: socket() then bind() then sendto() then recvfrom() then close(). recvfrom(sockfd, buf, len, addr, addrlen) returns number of bytes received and fills in sender address. bind() uses INADDR_ANY to accept from any network interface: addr.sin_addr.s_addr = htonl(INADDR_ANY);'},
-
+a:'No connection needed — just send and receive. Server: socket() then setsockopt() then bind() then recvfrom() loop then close(). Client: socket() then bind() then sendto() then recvfrom() then close(). recvfrom(sockfd, buf, len, flags, addr, addrlen) returns number of bytes received and fills in sender address. bind() uses INADDR_ANY to accept from any network interface. Simpler protocol but no guarantees of delivery or ordering.'},
 {u:'Networking',q:'Network vs host byte order — conversion functions',
-a:'Problem: different architectures use different byte orders for multi-byte integers. Big Endian: A[0] = highest order byte — chosen as network byte order. Little Endian: A[0] = lowest order byte. Internet architects chose big-endian as network byte order for consistency. Conversion functions from arpa/inet.h: htonl(hostlong) host to network 32-bit. htons(hostshort) host to network 16-bit. ntohl(netlong) network to host 32-bit. ntohs(netshort) network to host 16-bit. Always use these when setting port numbers and IP addresses in socket structs.'},
-
+a:'Problem: different architectures use different byte orders for multi-byte integers. Big Endian: A[0] = highest order byte. Little Endian: A[0] = lowest order byte. Internet architects chose big-endian as network byte order for consistency on the wire. Conversion functions from arpa/inet.h: htonl(hostlong) host to network 32-bit. htons(hostshort) host to network 16-bit. ntohl(netlong) network to host 32-bit. ntohs(netshort) network to host 16-bit. Always use these when setting port numbers and IP addresses in socket structs (sin_port, sin_addr).'},
 {u:'Networking',q:'eBPF — Extended Berkeley Packet Filter',
-a:'Execute sandboxed programs in privileged kernel context. Suitable for networking, security, and tracing. User-space applications hook into kernel-level events. Originally for packet filtering, now much more general. eBPF programs compiled with special C compiler and run in a sandboxed virtual machine in the kernel. Programs are verified to be safe before execution. Can create kernel probes (kprobe) or user probes (uprobe) for custom hooks. Motivation: networking stack buffer copies are slow and context switching between kernel and user is expensive.'},
-
+a:'Execute sandboxed programs in privileged kernel context. Suitable for networking, security, and tracing. User-space applications hook into kernel-level events. Originally for packet filtering, now much more general. eBPF programs compiled with special C compiler and run in a sandboxed virtual machine in the kernel. Programs are verified to be safe before execution. Can create kernel probes (kprobe) or user probes (uprobe) for custom hooks. Motivation: networking stack buffer copies are slow and kernel/user context switching is expensive. eBPF avoids the context switch overhead.'},
 {u:'Networking',q:'Networking analogies to OS concepts',
-a:'"Networks are distributed virtual memory." "Networks are distributed I/O." "Routing in Networks is distributed pointers." "URL to IP (DNS) are distributed page tables." These analogies show up in exam short answers to test conceptual understanding. The pattern: networking is an extension of local OS concepts to distributed systems. Socket buffers link control with memory, using a pointer plus length field to allow direct data manipulation without copying header data between protocols.'},
+a:'"Networks are distributed virtual memory." "Networks are distributed I/O." "Routing in Networks is distributed pointers." "URL to IP (DNS) are distributed page tables." These analogies show up in exam short answers. The pattern: networking is an extension of local OS concepts to distributed systems. Socket buffers link control with memory using a pointer plus length field to allow direct data manipulation without copying header data between protocols.'},
 
 // =====================================================================
 // SECURITY
 // =====================================================================
 {u:'Security',q:'System security and principle of least privilege',
 a:'System security = prevention of unauthorised access and operation, and protection from malicious actors who might steal, inject, or manipulate data, cause damage, or disrupt services. Principle of Least Privilege: programs, users, and systems should be given just enough privileges to perform their tasks. Properly set permissions limit damage if entity has a bug or gets abused. Can be static (during life of process) or dynamic (changed as needed). Audit Trails: record all protection-oriented activities. Examples: dmesg, /var/log/messages.'},
-
 {u:'Security',q:'Protection rings',
 a:'Components ordered by privilege level, protected from each other. Kernel in ring 0 (most privileged); user apps in ring 3. Requires hardware support. Gates (syscall, trap, interrupt) used to transfer between levels. Modern additions: hypervisors introduced another ring. ARMv7 TrustZone: protects crypto functions via Secure Monitor Call (SMC) instruction. Protects NFC secure element and crypto keys from even the kernel. Rule: if j < i then Domain_i is a subset of Domain_j (inner rings have strictly more privileges than outer rings).'},
-
 {u:'Security',q:'Access matrix — domains, objects, and access rights',
 a:'Computer treated as processes and objects. Hardware objects (devices) and software objects (files, programs, semaphores). Principle of need-to-know: process should only have access to objects it currently requires. Access right = (object-name, rights-set). Domain = set of access rights = a row in the access matrix. Access matrix: rows = domains, columns = objects. Access(i,j) = operations domain i can invoke on object j. If process in domain Di tries op on object Oj, op must be in cell (i,j). Separates mechanism from policy.'},
-
 {u:'Security',q:'ACL vs capability lists',
-a:'Access Control Matrix scales poorly — most cells are empty. Access Control List (ACL): store permissions per object. Lists only subjects that have access to that specific resource. Convenient to see who can access a resource. Not convenient to audit a specific user\'s rights. Capability List: store permissions per subject. Lists only objects the subject can access. Convenient to see all resources a user can access. Not convenient to find who has access to a specific resource. Linux capabilities: slices root powers into bitmap bits. Three sets: permitted, effective, inheritable.'},
-
+a:'Access Control Matrix scales poorly — most cells are empty. Access Control List (ACL): store permissions per object. Lists only subjects that have access to that specific resource. Convenient to see who can access a resource. Not convenient to audit a specific user\'s rights across all objects. Capability List: store permissions per subject. Lists only objects the subject can access. Convenient to see all resources a user can access. Not convenient to find who has access to a specific resource. Linux capabilities: slices root powers into bitmap bits. Three sets: permitted, effective, inheritable.'},
 {u:'Security',q:'DAC vs MAC',
-a:'DAC (Discretionary Access Control): traditional UNIX permissions and Windows ACLs. Users and admins must actively increase protection. Root can bypass. "Discretionary" is a weakness — if an account is compromised, the attacker inherits all its access rights. MAC (Mandatory Access Control): even root cannot circumvent. Makes resources inaccessible except to intended owners. Labels assigned to objects and subjects. Policy checked on every access attempt. Examples: SELinux, TrustedBSD (macOS), Trusted Solaris, Windows Vista MAC. Modern systems implement both.'},
-
+a:'DAC (Discretionary Access Control): traditional UNIX permissions and Windows ACLs. Users and admins must actively increase protection. Root can bypass all DAC restrictions. "Discretionary" is a weakness — if an account is compromised, attacker inherits all its access rights. MAC (Mandatory Access Control): even root cannot circumvent. Makes resources inaccessible except to intended owners. Labels assigned to objects and subjects. Policy checked on every access attempt. Examples: SELinux, TrustedBSD (macOS), Trusted Solaris, Windows Vista MAC. Modern systems implement both.'},
 {u:'Security',q:'RBAC — Role-Based Access Control',
 a:'Protection applied to non-file resources. Privilege = right to execute a syscall or use an option within a syscall. Privileges assigned to processes. Users assigned roles granting access to privileges and programs. Enable a role via password to gain its privileges. Similar in concept to the access matrix. Example: Oracle Solaris 10 RBAC. Compared to traditional root/user binary: RBAC is more fine-grained, more flexible, more aligned with least-privilege. Domain switching methods: filesystem (setuid bit), passwords (su command), or commands (sudo prefix).'},
-
 {u:'Security',q:'Buffer overflow, stack smashing, and defences',
 a:'Buffer overflow: reading/writing more data than a buffer can hold. Stack smashing: overwrite return address → enable arbitrary code execution or crash. Common in C/C++ which allow direct memory access through pointers. gets() and strcpy() are dangerous — no bounds checking. Be careful with integer signedness in string lengths. Always sanitise strings going to database or exec calls. Defences: bounds checking, ASLR (randomise stack/heap/library positions), NX bit (mark stack/heap as non-executable), Pointer Authentication Codes (PAC) — ARM hardware defence. Return-to-libc attacks bypass NX bit alone.'},
-
 {u:'Security',q:'Sandboxing and capabilities',
 a:'Sandboxing: run process in limited environment. Impose irremovable restrictions before main() runs. Process cannot access resources beyond allowed set. Java/.NET implement at VM level. Apple macOS: seatbelt feature from 10.5. SIP = system-wide platform profile. Capabilities (Linux/Android, based on POSIX.1e): unforgeable token of authority granting specific rights. Slices root powers into bitmap bits. Three sets: permitted, effective, inheritable. Per process or per thread. Once revoked, cannot be reacquired. Direct implementation of principle of least privilege.'},
-
 {u:'Security',q:'Fork bomb, ulimit, and DoS attacks',
 a:'Fork bomb: fork() { fork | fork & }; fork — process recursively forks copies of itself, exhausts system resources, denies service to other users on shared machine. Also called a wabbit. Prevention: ulimit. ulimit -a (view current limits). ulimit -u 50 (max 50 processes per user). ulimit can cap: max processes forked, max files open, and other resource limits. Fork bomb = local DoS. Network DoS: remote nodes flood server with requests using botnets (examples: Mirai, Estonia attacks). Mitigation: static firewalls, signature-based IDS (snort), anomaly-detection (machine learning).'},
-
 {u:'Security',q:'Code injection and privilege grain',
 a:'Code injection: system code has bugs allowing executable code to be added or modified. Results from poor/insecure programming in C/C++. Goal: buffer overflow → place code in buffer → cause execution. Often uses a trampoline to exploit buffer overflow. Full defence stack: bounds checking + ASLR + NX bit + Pointer Authentication Codes. Privilege grain design choice: few large levels = simple, low overhead, may not be fit for purpose. Many fine-grained levels = more complexity, more management overhead. Compartmentalisation: protect each component through specific permissions and access restrictions.'},
+{u:'Security',q:'Compartmentalisation and audit trails',
+a:'Compartmentalisation: protecting each individual system component through specific permissions and access restrictions. Each component only has access to what it needs. If one component is compromised, the damage is limited to its compartment. Audit Trails: recording all protection-oriented activities is important for understanding what happened, why, and catching what shouldn\'t have happened. Linux audit tools: dmesg (kernel messages), /var/log/messages (system log), journalctl. Important for post-mortems after a security incident. SE Linux policies specify what each process can/cannot access as an additional layer on top of standard permissions.'},
+// =====================================================================
+// ADDITIONAL GAP CARDS
+// =====================================================================
 
+// --- MEMORY: virtual address space layout ---
+{u:'Memory',q:'32-bit virtual address space layout in Linux',
+a:'32-bit processor can address 2^32 = 4,294,967,296 bytes = 4GB virtual address space. Linux 3:1 split (default on most 32-bit): 0 to 3GB = user space, 3GB to 4GB = kernel space. 2:2 split used on default Raspberry Pi Linux. User space layout (low to high): program code, static data, heap (grows up from program break), unallocated space, stack (grows down, pointed to by %esp). %esp = stack pointer register. Program break (brk pointer) = top of heap. Kernel always mapped at top of every process\'s address space for fast syscall access.'},
+
+// --- MEMORY: contiguous allocation mapping calculation ---
+{u:'Memory',q:'Contiguous file allocation — address mapping formula',
+a:'Each file occupies a set of contiguous blocks. Only need starting block address and file length to locate any block. Mapping formula (block size = 512 bytes): Given logical address (LA): Q = LA / 512 (integer division) = block offset from start. R = LA mod 512 = displacement into that block. Physical block = starting address + Q. Access byte at displacement R within that block. Supports random access. Problems: external fragmentation (free space is scattered), must know file size at creation time.'},
+
+// --- FILESYSTEMS: linked allocation mapping calculation ---
+{u:'Filesystems',q:'Linked file allocation — address mapping formula',
+a:'Each block contains a pointer to the next block (P = 4 bytes for pointer). Data per block = block_size - P = 512 - 4 = 508 bytes. Mapping formula: Given logical address (LA): Q = LA / (block_size - P) = which block in the linked chain (0-indexed). R = LA mod (block_size - P) = displacement into that block. Must traverse Q pointers from first block to reach the target. Access byte at position R + P within the block (skip the pointer). Does NOT support random access — must traverse chain. No external fragmentation.'},
+
+// --- FILESYSTEMS: FAT filesystem ---
+{u:'Filesystems',q:'FAT — File Allocation Table filesystem (EXAMINABLE)',
+a:'FAT is a linked allocation filesystem used in DOS/Windows. The File Allocation Table is an in-memory array where each entry corresponds to a disk block (cluster). Each FAT entry contains: the index of the next block in the file, OR a special end-of-file marker, OR 0 for a free block. Directory entries store the starting block number for each file. To read a file: look up starting block in directory, follow FAT chain until end-of-file. FAT12, FAT16, FAT32 vary by size of each FAT entry (12, 16, 32 bits). FAT32 supports up to 4GB files. Simple, low overhead, widely compatible — good for embedded/removable media.'},
+
+// --- FILESYSTEMS: FAT vs iNode comparison ---
+{u:'Filesystems',q:'FAT vs iNode/indexed allocation — key difference',
+a:'FAT (linked in a table): allocation info stored centrally in one big table (the FAT). Easy to find free space (scan FAT for 0 entries). Table must be kept in memory for performance. Fragmented chains = slow sequential reads. iNode (indexed allocation): each file has its own index block (inode) with direct pointers plus single/double/triple indirect pointers. Allocation info is per-file and distributed. No single point of failure. Supports much larger files. Linux ext2/ext3/ext4 use inodes. FAT is better for simple/embedded use. iNode is better for general-purpose OS use with large files and many files.'},
+
+// --- SCHEDULING: scheduling queue structure in Linux ---
+{u:'Scheduling',q:'Linux scheduling queue structure',
+a:'The Linux kernel schedules threads, not processes. There is one run queue per priority level. High Priority Queue (real-time: 0-99) and Low Priority Queue (normal: 100-139). A classifier assigns each thread to the appropriate queue based on its scheduling policy and priority. The scheduler picks the head of the highest non-empty queue. Soft real-time thread queues: linked list with a bitmap indicating which queues are non-empty (for fast lookup). CFS (Completely Fair Scheduler) manages the normal priority queues using a red-black tree sorted by virtual runtime.'},
+
+// --- PROCESSES: MentOS context ---
+{u:'Processes',q:'MentOS — what it is and why it matters for this course',
+a:'MentOS is a didactic Unix-like OS used in the COMPSCI4011 labs at Glasgow. It is a real, buildable OS written in C that implements all the OS concepts from the lectures. Lab exercises include: writing process scheduling algorithms in MentOS (FCFS, RR, SJF), context switch code, interrupt handlers. Key MentOS data structures: task_struct (process/thread context), thread_struct_t (processor context — registers, PC, SP, about 500 bytes on 32-bit ARM). thread_info: per-thread admin information. Key file: mentos/inc/process/process.h. Lab content is examinable.'},
+
+// --- CONCURRENCY: condition variables ---
+{u:'Concurrency',q:'Condition variables — definition and usage',
+a:'A condition variable allows a thread to block until a specific condition on shared data is true. Always used together with a mutex — the mutex protects the shared data, the condition variable signals when the data has changed. Pattern: lock mutex, while condition is not met then wait on condition variable (atomically releases mutex and blocks), recheck condition, unlock mutex. POSIX: pthread_cond_t cond; pthread_cond_wait(&cond, &mutex) — atomically releases mutex and waits. pthread_cond_signal(&cond) — wake one waiting thread. pthread_cond_broadcast(&cond) — wake all waiting threads. Use condition variables when you need to wait for a state change, not just mutual exclusion.'},
+
+// --- CONCURRENCY: producer-consumer with locks ---
+{u:'Concurrency',q:'Producer-consumer problem — solution with locks',
+a:'Shared buffer of size N, shared count variable, shared in/out indices. Problem: count++ and count-- each compile to multiple machine instructions, causing a race condition. Solution: wrap both producer and consumer critical sections with the same lock. acquire(lock) before modifying buffer/count, release(lock) after. This ensures only one of producer or consumer is in the critical section at a time. Full solution also needs: producer to wait if count==N (buffer full), consumer to wait if count==0 (buffer empty). Use condition variables or semaphores for the wait conditions. Mutex alone just ensures mutual exclusion, not ordering.'},
+
+// --- MEMORY: NRU bit mechanics detail ---
+{u:'Memory',q:'NRU — Referenced and Modified bit mechanics',
+a:'When a process starts: R=0, M=0 for all pages. Referenced bit R: set to 1 when the page is read or written. Periodically (on timer interrupt) R is reset to 0 — this is how "recently" is measured. Modified bit M: set to 1 when the page is written to after loading from storage. M is never periodically reset (only cleared when page is swapped out). Four NRU categories: 0 = R=0,M=0 (not referenced, not modified — best to evict). 1 = R=0,M=1 (not referenced, but modified — must write to disk before evicting). 2 = R=1,M=0 (recently referenced, not modified). 3 = R=1,M=1 (recently referenced and modified — worst to evict). Evict from lowest non-empty category.'},
+
+// --- MEMORY: NUMA ---
+{u:'Memory',q:'NUMA — Non-Uniform Memory Access',
+a:'NUMA: computer memory architecture where access times differ depending on the distance between the processor and where the memory is stored. In a multi-CPU system, each CPU has local memory that it accesses faster, and remote memory (other CPUs\' local memory) that it accesses slower. Linux NUMA policies: Interleaved — allocate memory in round-robin across all nodes, ensures average access times are uniform. Node-local — allocate memory close to the processor executing the malloc(), assumes memory will mostly be accessed by threads on the same NUMA region. Processor caches reduce access latency variance. Used in servers and HPC systems.'},
+
+// --- HARDWARE: what happens on boot ---
+{u:'Hardware',q:'What happens when you press the power button — boot sequence',
+a:'1. Power supplied to hardware. 2. CPU starts in kernel mode at a fixed physical address (reset vector). 3. Firmware (BIOS/UEFI) runs: POST (power-on self-test), finds boot device. 4. Bootloader (e.g. GRUB) loaded from boot device: finds kernel image on disk. 5. Kernel image loaded into memory, control transferred to kernel. 6. Kernel initialises: sets up interrupt vector table, initialises MMU, sets up memory management, starts device drivers. 7. Kernel launches init process (PID 1). 8. init starts system services and eventually the user environment. System boots in kernel mode throughout; user mode begins only when user processes are started.'},
+
+// --- NETWORKING: socket binding detail ---
+{u:'Networking',q:'bind() — associating a socket with a port',
+a:'bind() assigns an address to a socket so clients can find it. Before bind(), zero out the sockaddr_in structure. Set: sin_family = AF_INET, sin_addr.s_addr = htonl(INADDR_ANY) (accept from any network interface), sin_port = htons(PORT) (convert port to network byte order). bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)). INADDR_ANY: server machines often have multiple network interfaces — this binds to all of them. bind() is required for servers. Clients typically do not call bind() explicitly for TCP (OS assigns ephemeral port automatically). For UDP, clients must bind() to receive replies.'},
+
+// --- SECURITY: setuid and domain switching ---
+{u:'Security',q:'setuid bit and domain switching mechanisms',
+a:'Domain switching = temporarily running with a different user\'s privileges. Three mechanisms: (1) Filesystem (setuid bit): each file has a setuid bit. When executed with setuid=on, the process runs with the file owner\'s UID, not the caller\'s. When execution completes, UID is reset. (2) Passwords (su command): "become that user" temporarily by providing their password. Switches domain for the session. (3) Commands (sudo prefix): executes one command in another domain (root typically). Requires the original domain to have sudo privilege or provide correct password. Principle: domain switching enables delegation of specific privileges without permanently elevating a user.'},
+
+// --- PROCESSES: C signals syntax ---
+{u:'Processes',q:'Unix signals — common signals and C handling',
+a:'Common Unix signals: SIGINT (2) — Ctrl+C, interrupt from keyboard. SIGTERM (15) — polite termination request, can be caught. SIGKILL (9) — force kill, cannot be caught or ignored. SIGSTOP (19) — pause process, cannot be caught. SIGCONT (18) — resume stopped process. SIGCHLD (17) — child process stopped or terminated. SIGUSR1/SIGUSR2 — user-defined. SIGSEGV (11) — segmentation fault. SIGALRM — timer expired. In C: signal(SIGINT, handler_fn) — register handler. raise(SIGTERM) — send signal to self. kill(pid, SIGTERM) — send to another process. kill -9 PID from shell = SIGKILL. Signals are async — handler runs between any two instructions.'},
 ]; // end ALL_CARDS
 
-const STORAGE_KEY='osfc_state';
-function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({unit:activeUnit,idx}));}catch(e){}}
-function loadState(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return s;}catch(e){return{};}}
-const _saved=loadState();
-let activeUnit=_saved.unit||'all';
-let deck=activeUnit==='all'?[...ALL_CARDS]:ALL_CARDS.filter(c=>c.u===activeUnit);
-let idx=Math.min(_saved.idx||0,deck.length-1);
-let flipped=false, touchStartX=0;
+let activeUnit='all', deck=[...ALL_CARDS], idx=0, flipped=false, touchStartX=0;
 
 function unitLabel(id){return(UNITS.find(u=>u.id===id)||{}).label||id;}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 function updateCounter(){
-  const el=document.getElementById('topCounter');
-  if(el&&deck.length)el.innerHTML=`<span>${idx+1}</span> / ${deck.length}`;
+const el=document.getElementById('topCounter');
+if(el&&deck.length)el.innerHTML=`<span>${idx+1}</span> / ${deck.length}`;
 }
+
 function renderCard(dir){
-  const card=deck[idx];
-  document.getElementById('main').innerHTML=`
-    <div class="progress-bar"><div class="progress-fill" style="width:${((idx+1)/deck.length)*100}%"></div></div>
-    <div class="card-scene" id="cardScene">
-      <div class="card${flipped?' flipped':''}" id="theCard">
-        <div class="card-face card-front">
-          <div class="card-header">
-            <div class="card-type">Topic</div>
-            <div class="card-unit">${esc(unitLabel(card.u))}</div>
-          </div>
-          <div class="card-body"><div class="card-text">${esc(card.q)}</div></div>
-          <div class="card-mark">Q</div>
-          <div class="card-hint">tap card &middot; press flip &middot; swipe</div>
-        </div>
-        <div class="card-face card-back">
-          <div class="card-header">
-            <div class="card-type">Detail</div>
-            <div class="card-unit">${esc(unitLabel(card.u))}</div>
-          </div>
-          <div class="card-body"><div class="card-text">${esc(card.a)}</div></div>
-          <div class="card-mark">A</div>
-        </div>
-      </div>
-    </div>
-    <div class="nav">
-      <button class="nav-btn" id="prevBtn">&#8592;</button>
-      <button class="flip-btn" id="flipBtn">${flipped?'unflip':'flip'}</button>
-      <button class="nav-btn" id="nextBtn">&#8594;</button>
-    </div>
-    <div class="swipe-hint">&#8592; &#8594; arrow keys &middot; space to flip</div>`;
-  updateCounter();
-  if(dir){
-    const s=document.getElementById('cardScene');
-    s.classList.add(dir===1?'slide-right':'slide-left');
-    setTimeout(()=>s.classList.remove('slide-right','slide-left'),300);
-  }
-  document.getElementById('theCard').addEventListener('click',toggleFlip);
-  document.getElementById('flipBtn').addEventListener('click',toggleFlip);
-  document.getElementById('prevBtn').addEventListener('click',()=>navigate(-1));
-  document.getElementById('nextBtn').addEventListener('click',()=>navigate(1));
-  const sc=document.getElementById('cardScene');
-  sc.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
-  sc.addEventListener('touchend',e=>{const dx=touchStartX-e.changedTouches[0].clientX;if(Math.abs(dx)>50)navigate(dx>0?1:-1);});
+const card=deck[idx];
+document.getElementById('main').innerHTML=`
+<div class="progress-bar"><div class="progress-fill" style="width:${((idx+1)/deck.length)*100}%"></div></div>
+<div class="card-scene" id="cardScene">
+<div class="card${flipped?' flipped':''}" id="theCard">
+<div class="card-face card-front">
+<div class="card-header">
+<div class="card-type">Topic</div>
+<div class="card-unit">${esc(unitLabel(card.u))}</div>
+</div>
+<div class="card-body"><div class="card-text">${esc(card.q)}</div></div>
+<div class="card-mark">Q</div>
+<div class="card-hint">tap card &middot; press flip &middot; swipe</div>
+</div>
+<div class="card-face card-back">
+<div class="card-header">
+<div class="card-type">Detail</div>
+<div class="card-unit">${esc(unitLabel(card.u))}</div>
+</div>
+<div class="card-body"><div class="card-text">${esc(card.a)}</div></div>
+<div class="card-mark">A</div>
+</div>
+</div>
+</div>
+<div class="nav">
+<button class="nav-btn" id="prevBtn">&#8592;</button>
+<button class="flip-btn" id="flipBtn">${flipped?'unflip':'flip'}</button>
+<button class="nav-btn" id="nextBtn">&#8594;</button>
+</div>
+<div class="swipe-hint">&#8592; &#8594; arrow keys &middot; space to flip</div>`;
+updateCounter();
+if(dir){
+const s=document.getElementById('cardScene');
+s.classList.add(dir===1?'slide-right':'slide-left');
+setTimeout(()=>s.classList.remove('slide-right','slide-left'),300);
 }
+document.getElementById('theCard').addEventListener('click',toggleFlip);
+document.getElementById('flipBtn').addEventListener('click',toggleFlip);
+document.getElementById('prevBtn').addEventListener('click',()=>navigate(-1));
+document.getElementById('nextBtn').addEventListener('click',()=>navigate(1));
+const sc=document.getElementById('cardScene');
+sc.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
+sc.addEventListener('touchend',e=>{const dx=touchStartX-e.changedTouches[0].clientX;if(Math.abs(dx)>50)navigate(dx>0?1:-1);});
+}
+
 function toggleFlip(){
-  flipped=!flipped;
-  document.getElementById('theCard')?.classList.toggle('flipped',flipped);
-  const b=document.getElementById('flipBtn');
-  if(b)b.textContent=flipped?'unflip':'flip';
+flipped=!flipped;
+document.getElementById('theCard')?.classList.toggle('flipped',flipped);
+const b=document.getElementById('flipBtn');
+if(b)b.textContent=flipped?'unflip':'flip';
 }
-function navigate(dir){idx=((idx+dir)+deck.length)%deck.length;flipped=false;saveState();renderCard(dir);}
+
+function navigate(dir){idx=((idx+dir)+deck.length)%deck.length;flipped=false;renderCard(dir);}
+
 function renderUnitStrip(){
-  const strip=document.getElementById('unitStrip');
-  strip.innerHTML=UNITS.map(u=>`<button class="unit-tab${u.id===activeUnit?' active':''}" data-id="${u.id}">${u.label}</button>`).join('');
-  strip.querySelectorAll('.unit-tab').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      activeUnit=btn.dataset.id;
-      deck=activeUnit==='all'?[...ALL_CARDS]:ALL_CARDS.filter(c=>c.u===activeUnit);
-      idx=0;flipped=false;saveState();
-      strip.querySelectorAll('.unit-tab').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      renderCard(null);
-    });
-  });
-}
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight')navigate(1);
-  else if(e.key==='ArrowLeft')navigate(-1);
-  else if(e.key===' '||e.key==='Enter'){e.preventDefault();toggleFlip();}
+const strip=document.getElementById('unitStrip');
+strip.innerHTML=UNITS.map(u=>`<button class="unit-tab${u.id===activeUnit?' active':''}" data-id="${u.id}">${u.label}</button>`).join('');
+strip.querySelectorAll('.unit-tab').forEach(btn=>{
+btn.addEventListener('click',()=>{
+activeUnit=btn.dataset.id;
+deck=activeUnit==='all'?[...ALL_CARDS]:ALL_CARDS.filter(c=>c.u===activeUnit);
+idx=0;flipped=false;
+strip.querySelectorAll('.unit-tab').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+renderCard(null);
 });
+});
+}
+
+document.addEventListener('keydown',e=>{
+if(e.key==='ArrowRight')navigate(1);
+else if(e.key==='ArrowLeft')navigate(-1);
+else if(e.key===' '||e.key==='Enter'){e.preventDefault();toggleFlip();}
+});
+
 renderUnitStrip();
 renderCard(null);
 </script>
